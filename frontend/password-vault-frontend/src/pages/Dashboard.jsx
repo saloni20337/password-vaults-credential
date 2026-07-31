@@ -1,61 +1,34 @@
 import { Link } from "react-router-dom";
 
 function Dashboard() {
-
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
 
-      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-10 text-center">
+      <div className="w-full max-w-lg bg-white border rounded-2xl shadow-sm p-10">
 
-        <h1 className="text-5xl font-bold text-slate-800 mb-5">
-          🔐 Password Vault Manager
+        <h1 className="text-4xl font-bold text-gray-900">
+          Password Vault
         </h1>
 
-        <p className="text-lg text-slate-600 mb-8">
-          Securely store and manage your passwords and credentials.
+        <p className="mt-3 text-gray-600">
+          Securely store and manage your credentials in one place.
         </p>
 
-
-        <div className="grid md:grid-cols-3 gap-5 mb-10">
-
-          <div className="bg-blue-100 p-5 rounded-xl">
-            🔒
-            <h3 className="font-bold mt-2">
-              Secure Storage
-            </h3>
-          </div>
-
-
-          <div className="bg-indigo-100 p-5 rounded-xl">
-            🛡️
-            <h3 className="font-bold mt-2">
-              Authentication
-            </h3>
-          </div>
-
-
-         
-
-        </div>
-
-
-        <div className="flex gap-5 justify-center">
+        <div className="mt-8 space-y-3">
 
           <Link to="/login">
-            <button className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold">
+            <button className="w-full bg-black text-white py-3 rounded-lg font-medium">
               Login
             </button>
           </Link>
 
-
           <Link to="/register">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-semibold">
-              Register
+            <button className="w-full border border-gray-300 py-3 rounded-lg font-medium">
+              Create Account
             </button>
           </Link>
 
         </div>
-
 
       </div>
 

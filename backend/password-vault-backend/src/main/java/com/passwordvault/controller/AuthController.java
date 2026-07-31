@@ -1,6 +1,9 @@
 package com.passwordvault.controller;
+import com.passwordvault.dto.ForgotPasswordRequest;
 import com.passwordvault.dto.LoginRequest;
 import com.passwordvault.dto.RegisterRequest;
+import com.passwordvault.dto.ResetPasswordRequest;
+import com.passwordvault.dto.VerifyOtpRequest;
 import com.passwordvault.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -26,5 +29,33 @@ public class AuthController {
             @RequestBody LoginRequest request
     ) {
         return authService.login(request);
+    }
+    
+    // Forgot Password - Send OTP
+    @PostMapping("/forgot-password")
+    public String forgotPassword(
+            @RequestBody ForgotPasswordRequest request
+    ){
+        return authService.forgotPassword(request);
+    }
+
+
+
+    // Verify OTP
+    @PostMapping("/verify-otp")
+    public String verifyOtp(
+            @RequestBody VerifyOtpRequest request
+    ){
+        return authService.verifyOtp(request);
+    }
+
+
+
+    // Reset Password
+    @PostMapping("/reset-password")
+    public String resetPassword(
+            @RequestBody ResetPasswordRequest request
+    ){
+        return authService.resetPassword(request);
     }
 }
