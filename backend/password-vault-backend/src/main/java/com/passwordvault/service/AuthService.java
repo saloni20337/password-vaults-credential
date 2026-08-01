@@ -2,12 +2,12 @@ package com.passwordvault.service;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
-
 import java.time.LocalDateTime;
 import java.util.Random;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import com.passwordvault.dto.LoginResponse;
+import com.passwordvault.security.JwtUtil;
 import com.passwordvault.dto.ForgotPasswordRequest;
 import com.passwordvault.dto.LoginRequest;
 import com.passwordvault.dto.RegisterRequest;
@@ -28,7 +28,7 @@ public class AuthService {
     private final JavaMailSender mailSender;
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder encoder;
-
+    private final JwtUtil jwtUtil;
   
 
 
@@ -60,47 +60,38 @@ public class AuthService {
 
 
     // Login User
-    public String login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
 
+    User user = userRepo.findByEmail(
+            request.getEmail()
+    ).orElse(null);
 
-        User user = userRepo.findByEmail(
-                request.getEmail()
-        ).orElse(null);
-
-
-        if(user == null) {
-            return "User Not Found";
-        }
-
-
-        if(encoder.matches(
-                request.getPassword(),
-                user.getPassword()
-        )) {
-
-            return "Login Successful";
-        }
-
-
-        return "Invalid Credentials";
+    if(user == null) {
+        throw new RuntimeException("User Not Found");
     }
-   @Transactional
-   public String forgotPassword(ForgotPasswordRequest request) {
 
+    if(!encoder.matches(
+            request.getPassword(),
+            user.getPassword()
+    )) {
+        throw new RuntimeException("Invalid Credentials");
+    }
+
+    String token =
+            jwtUtil.generateToken(user.getEmail());
+
+    return new LoginResponse(token);
+}
+// Forgot Password - Generate OTP and Send Mail
+public String forgotPassword(ForgotPasswordRequest request){
 
     User user = userRepo.findByEmail(request.getEmail())
             .orElse(null);
 
 
     if(user == null){
-
-        throw new RuntimeException("Email not registered");
-
+        throw new RuntimeException("User not found");
     }
-
-
-    // Delete previous OTP if exists
-    tokenRepo.deleteByEmail(request.getEmail());
 
 
     String otp = String.valueOf(
@@ -111,9 +102,7 @@ public class AuthService {
     PasswordResetToken token = new PasswordResetToken();
 
     token.setEmail(request.getEmail());
-
     token.setOtp(otp);
-
     token.setExpiryTime(
             LocalDateTime.now().plusMinutes(5)
     );
@@ -122,22 +111,16 @@ public class AuthService {
     tokenRepo.save(token);
 
 
-
     SimpleMailMessage message = new SimpleMailMessage();
 
     message.setTo(request.getEmail());
-
     message.setSubject("Password Reset OTP");
-
-
     message.setText(
-            "Your OTP is: " + otp +
-            "\nOTP is valid for 5 minutes."
+            "Your OTP for password reset is: " + otp
     );
 
 
     mailSender.send(message);
-
 
 
     return "OTP sent successfully";
@@ -183,9 +166,8 @@ public String verifyOtp(VerifyOtpRequest request){
     return "OTP Verified";
 
 }
-public String resetPassword(
-        ResetPasswordRequest request
-){
+
+public String resetPassword(ResetPasswordRequest request) {
 
     User user =
             userRepo.findByEmail(request.getEmail())

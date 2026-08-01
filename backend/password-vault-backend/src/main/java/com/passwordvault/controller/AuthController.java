@@ -1,6 +1,7 @@
 package com.passwordvault.controller;
 import com.passwordvault.dto.ForgotPasswordRequest;
 import com.passwordvault.dto.LoginRequest;
+import com.passwordvault.dto.LoginResponse;
 import com.passwordvault.dto.RegisterRequest;
 import com.passwordvault.dto.ResetPasswordRequest;
 import com.passwordvault.dto.VerifyOtpRequest;
@@ -25,8 +26,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(
-            @RequestBody LoginRequest request
+   public LoginResponse login(
+        @RequestBody LoginRequest request
     ) {
         return authService.login(request);
     }
@@ -57,5 +58,6 @@ public class AuthController {
             @RequestBody ResetPasswordRequest request
     ){
         return authService.resetPassword(request);
+    
     }
 }
