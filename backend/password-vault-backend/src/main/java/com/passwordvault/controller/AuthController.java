@@ -5,8 +5,10 @@ import com.passwordvault.dto.LoginResponse;
 import com.passwordvault.dto.RegisterRequest;
 import com.passwordvault.dto.ResetPasswordRequest;
 import com.passwordvault.dto.VerifyOtpRequest;
+import com.passwordvault.entity.Credential;
 import com.passwordvault.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -60,4 +62,17 @@ public class AuthController {
         return authService.resetPassword(request);
     
     }
+
+    @GetMapping("/me")
+    public String currentUser(Authentication authentication){
+
+        return authentication.getName();
+}
+
+
+    @PostMapping("/logout")
+    public String logout(){
+
+        return "Logged Out Successfully";
+}
 }

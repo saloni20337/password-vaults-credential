@@ -1,6 +1,7 @@
 package com.passwordvault.security;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,7 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.passwordvault.entity.User;
 import com.passwordvault.repository.UserRepo;
-import java.util.Collections;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
         String email = jwtUtil.extractEmail(token);
-
+        System.out.println("email"+email);
 
         if(email != null &&
            SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -62,13 +63,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if(user != null && jwtUtil.validateToken(token)) {
 
-
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                user,
-                                null,
-                                Collections.emptyList()
-                        );
+                 new UsernamePasswordAuthenticationToken(
+                    user.getEmail(),
+                    null,
+                    Collections.emptyList()
+            );
+
+
+
 
 
                 authentication.setDetails(

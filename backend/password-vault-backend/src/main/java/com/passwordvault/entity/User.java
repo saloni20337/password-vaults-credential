@@ -1,10 +1,12 @@
 package com.passwordvault.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 
@@ -25,7 +27,7 @@ public class User {
 
     @Column(unique = true)
     private String email;
-
+    @JsonIgnore
     private String password;
 }
     

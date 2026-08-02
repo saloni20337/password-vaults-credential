@@ -12,7 +12,7 @@ public class CredentialRequest {
     private String username;
     private String password;
     private String category;
-    private boolean favourite;
+    private Boolean favourite;
 
     // Getters and Setters
 }

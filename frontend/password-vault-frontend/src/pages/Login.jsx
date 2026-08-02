@@ -27,15 +27,19 @@ const handleLogin = async (e) => {
       }
     );
 
-
-    if(response.data === "Login Successful") {
+    
+localStorage.setItem(
+  "token",
+  response.data.token
+);
+    if(response.data.message === "Login Successful") {
 
       setShowPopup(true);
 
     }
     else {
 
-      alert(response.data);
+      alert(response.data.message);
 
     }
 
@@ -46,7 +50,7 @@ const handleLogin = async (e) => {
 
     if(error.response){
 
-      alert(error.response.data);
+      alert(error.response.data.message);
 
     }
     else{
@@ -165,7 +169,7 @@ Forgot Password?
 
 
                 <button
-                  onClick={()=>setShowPopup(false)}
+                  onClick={()=> navigate("/dashboard")}
                   className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
                 >
                   Continue

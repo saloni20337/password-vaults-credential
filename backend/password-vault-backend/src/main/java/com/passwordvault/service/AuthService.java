@@ -80,8 +80,10 @@ public class AuthService {
     String token =
             jwtUtil.generateToken(user.getEmail());
 
-    return new LoginResponse(token);
+    return new LoginResponse(token, "Login Successful");
 }
+
+
 // Forgot Password - Generate OTP and Send Mail
 public String forgotPassword(ForgotPasswordRequest request){
 
