@@ -49,6 +49,8 @@ public class AuthController {
     public String verifyOtp(
             @RequestBody VerifyOtpRequest request
     ){
+          System.out.println("VERIFY OTP API HIT");
+        
         return authService.verifyOtp(request);
     }
 

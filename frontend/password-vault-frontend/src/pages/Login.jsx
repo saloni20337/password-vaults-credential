@@ -1,76 +1,95 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 
 function Login() {
 
+
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword,setShowPassword] = useState(false);
   const [showPopup,setShowPopup] = useState(false);
+
 
   const navigate = useNavigate();
 
-const handleLogin = async (e) => {
 
-  e.preventDefault();
 
-  try {
+  const handleLogin = async(e)=>{
 
-    const response = await axios.post(
-      "http://localhost:8080/api/auth/login",
-      {
-        email,
-        password
-      }
-    );
 
-    
-localStorage.setItem(
-  "token",
-  response.data.token
-);
-    if(response.data.message === "Login Successful") {
+    e.preventDefault();
+
+
+    try{
+
+
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/login",
+        {
+          email,
+          password
+        }
+      );
+
+
+
+      localStorage.setItem(
+        "token",
+        response.data.token
+      );
+
+
+      localStorage.setItem(
+        "email",
+        email
+      );
+
+
 
       setShowPopup(true);
 
-    }
-    else {
 
-      alert(response.data.message);
 
     }
+    catch(error){
 
 
-  } catch(error) {
+      console.log(error);
 
-    console.log(error);
+      if(error.response){
 
-    if(error.response){
+        alert(error.response.data);
 
-      alert(error.response.data.message);
+      }
+      else{
+
+        alert("Backend not connected");
+
+      }
+
 
     }
-    else{
 
-      alert("Backend not connected");
 
-    }
+  };
 
-  }
 
-};
+
 
 
   return (
 
+
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 relative">
 
 
+
+      {/* Back Button */}
+
       <button
-        onClick={() => navigate(-1)}
+        onClick={()=>navigate(-1)}
         className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
       >
         ←
@@ -78,12 +97,19 @@ localStorage.setItem(
 
 
 
+
+
       <div className="w-full max-w-lg bg-white border rounded-2xl shadow-sm p-10">
+
+
+
 
 
         <h1 className="text-4xl font-bold text-gray-900 text-center">
           Login
         </h1>
+
+
 
 
         <p className="mt-3 text-gray-600 text-center">
@@ -92,8 +118,17 @@ localStorage.setItem(
 
 
 
+
+
+
+
         <form onSubmit={handleLogin} className="mt-8 space-y-4">
 
+
+
+
+
+          {/* Email */}
 
           <input
             type="email"
@@ -104,7 +139,15 @@ localStorage.setItem(
           />
 
 
+
+
+
+
+
+          {/* Password */}
+
           <div className="relative">
+
 
             <input
               type={showPassword ? "text" : "password"}
@@ -113,6 +156,7 @@ localStorage.setItem(
               onChange={(e)=>setPassword(e.target.value)}
               className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
+
 
 
             <button
@@ -124,8 +168,16 @@ localStorage.setItem(
             </button>
 
 
+
           </div>
 
+
+
+
+
+
+
+          {/* Login Button */}
 
           <button
             type="submit"
@@ -133,24 +185,83 @@ localStorage.setItem(
           >
             Login
           </button>
-          <Link 
-to="/forgot-password"
-className="text-sm text-blue-600 font-medium hover:underline"
->
-Forgot Password?
-</Link>
+
+
+
+
+
+
+
+          {/* Forgot Password */}
+
+          <div className="text-right">
+
+
+            <Link
+              to="/forgot-password"
+              className="text-sm text-blue-600 font-medium hover:underline"
+            >
+              Forgot your password?
+            </Link>
+
+
+          </div>
+
+
+
+
+
+
+
+          {/* Create Account */}
+
+          <p className="text-center text-gray-600 mt-5">
+
+
+            Don't have an account?{" "}
+
+
+            <Link
+              to="/register"
+              className="text-black font-semibold hover:underline"
+            >
+              Create Account
+            </Link>
+
+
+
+          </p>
+
+
+
+
+
 
         </form>
 
 
 
+
+
+
+
+
+
+        {/* Login Success Popup */}
+
+
         {
           showPopup && (
+
 
             <div className="fixed inset-0 bg-black/30 flex items-center justify-center">
 
 
+
               <div className="bg-white border rounded-2xl shadow-sm p-8 w-full max-w-sm text-center">
+
+
+
 
 
                 <div className="text-5xl">
@@ -158,9 +269,15 @@ Forgot Password?
                 </div>
 
 
+
+
+
                 <h2 className="text-2xl font-bold text-gray-900 mt-4">
                   Login Successful
                 </h2>
+
+
+
 
 
                 <p className="text-gray-600 mt-2">
@@ -168,29 +285,44 @@ Forgot Password?
                 </p>
 
 
+
+
+
                 <button
-                  onClick={()=> navigate("/dashboard")}
+                  onClick={()=>navigate("/dashboard")}
                   className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
                 >
                   Continue
                 </button>
 
 
+
+
+
               </div>
 
 
+
+
             </div>
+
 
           )
         }
 
 
+
+
+
       </div>
+
 
 
     </div>
 
+
   );
+
 
 }
 

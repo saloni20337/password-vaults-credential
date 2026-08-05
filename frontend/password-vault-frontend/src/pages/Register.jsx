@@ -8,6 +8,7 @@ function Register() {
   const [name,setName] = useState("");
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("");
   const [showPassword,setShowPassword] = useState(false);
   const [showPopup,setShowPopup] = useState(false);
 
@@ -17,56 +18,70 @@ function Register() {
 
   const handleRegister = async(e)=>{
 
-  e.preventDefault();
+    e.preventDefault();
 
 
-  try{
+    // Password Match Check
+    if(password !== confirmPassword){
 
-    const response = await axios.post(
-      "http://localhost:8080/api/auth/register",
-      {
-        name,
-        email,
-        password
+      alert("Passwords do not match");
+      return;
+
+    }
+
+
+
+    try{
+
+      const response = await axios.post(
+        "http://localhost:8080/api/auth/register",
+        {
+          name,
+          email,
+          password
+        }
+      );
+
+
+
+      if(response.data === "User Registered Successfully"){
+
+        setShowPopup(true);
+
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+
       }
-    );
+      else{
 
+        alert(response.data);
 
-    if(response.data === "User Registered Successfully"){
+      }
 
-      setShowPopup(true);
-
-      setName("");
-      setEmail("");
-      setPassword("");
 
     }
-    else{
+    catch(error){
 
-      alert(response.data);
-
-    }
+      console.log(error);
 
 
-  }
-  catch(error){
+      if(error.response){
 
-    console.log(error);
+        alert(error.response.data);
 
-    if(error.response){
+      }
+      else{
 
-      alert(error.response.data);
+        alert("Backend not connected");
 
-    }
-    else{
-
-      alert("Backend not connected");
+      }
 
     }
 
-  }
+  };
 
-};
 
 
 
@@ -76,12 +91,14 @@ function Register() {
 
 
       {/* Back Arrow */}
+
       <button
         onClick={()=>navigate(-1)}
         className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
       >
         ←
       </button>
+
 
 
 
@@ -94,9 +111,11 @@ function Register() {
         </h1>
 
 
+
         <p className="mt-3 text-gray-600 text-center">
           Register to manage your passwords securely.
         </p>
+
 
 
 
@@ -105,6 +124,7 @@ function Register() {
 
 
           {/* Name Field */}
+
           <input
             type="text"
             placeholder="Full Name"
@@ -115,7 +135,9 @@ function Register() {
 
 
 
+
           {/* Email Field */}
+
           <input
             type="email"
             placeholder="Email Address"
@@ -126,7 +148,10 @@ function Register() {
 
 
 
+
+
           {/* Password Field */}
+
           <div className="relative">
 
             <input
@@ -151,6 +176,41 @@ function Register() {
 
 
 
+
+
+
+          {/* Confirm Password Field */}
+
+          <div className="relative">
+
+
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e)=>setConfirmPassword(e.target.value)}
+              className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            />
+
+
+            <button
+              type="button"
+              onClick={()=>setShowPassword(!showPassword)}
+              className="absolute right-3 top-3 text-gray-600"
+            >
+              👁️
+            </button>
+
+
+          </div>
+
+
+
+
+
+
+          {/* Create Account Button */}
+
           <button
             type="submit"
             className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
@@ -160,10 +220,33 @@ function Register() {
 
 
 
+
+          {/* Login Redirect */}
+
+          <p className="text-center text-gray-600 mt-5">
+
+            Already have an account?{" "}
+
+            <button
+              type="button"
+              onClick={()=>navigate("/login")}
+              className="text-black font-semibold hover:underline"
+            >
+              Login
+            </button>
+
+          </p>
+
+
+
         </form>
 
 
 
+
+
+
+        {/* Success Popup */}
 
         {
           showPopup && (
@@ -174,9 +257,12 @@ function Register() {
               <div className="bg-white border rounded-2xl shadow-sm p-8 w-full max-w-sm text-center">
 
 
+
                 <div className="text-5xl">
                   🎉
                 </div>
+
+
 
 
                 <h2 className="text-2xl font-bold text-gray-900 mt-4">
@@ -184,17 +270,30 @@ function Register() {
                 </h2>
 
 
+
+
                 <p className="text-gray-600 mt-2">
                   Your Password Vault account is ready.
                 </p>
 
 
+
+
                 <button
-                  onClick={()=>setShowPopup(false)}
+
+                  onClick={()=>{
+
+                    setShowPopup(false);
+                    navigate("/login");
+
+                  }}
+
                   className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
+
                 >
                   Continue
                 </button>
+
 
 
               </div>
@@ -204,6 +303,7 @@ function Register() {
 
           )
         }
+
 
 
 

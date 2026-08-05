@@ -92,8 +92,16 @@ public String forgotPassword(ForgotPasswordRequest request){
 
 
     if(user == null){
+
         throw new RuntimeException("User not found");
+
     }
+
+
+
+    // Delete previous OTP if exists
+    tokenRepo.deleteByEmail(request.getEmail());
+
 
 
     String otp = String.valueOf(
@@ -101,33 +109,49 @@ public String forgotPassword(ForgotPasswordRequest request){
     );
 
 
+
     PasswordResetToken token = new PasswordResetToken();
 
+
     token.setEmail(request.getEmail());
+
     token.setOtp(otp);
+
     token.setExpiryTime(
             LocalDateTime.now().plusMinutes(5)
     );
 
 
+
     tokenRepo.save(token);
+
+
+
 
 
     SimpleMailMessage message = new SimpleMailMessage();
 
+
     message.setTo(request.getEmail());
+
     message.setSubject("Password Reset OTP");
+
     message.setText(
-            "Your OTP for password reset is: " + otp
+            "Your OTP for password reset is: " + otp +
+            "\n\nThis OTP is valid for 5 minutes."
     );
+
 
 
     mailSender.send(message);
 
 
+
     return "OTP sent successfully";
 
 }
+
+
 public String verifyOtp(VerifyOtpRequest request){
 
 

@@ -4,88 +4,213 @@ import Navbar from "../components/Navbar";
 import api from "../services/api";
 
 
-function ViewCredentials() {
+function ViewCredentials(){
 
-  const [credentials, setCredentials] = useState([]);
-  const [showPassword, setShowPassword] = useState({});
-  const [search, setSearch] = useState("");
-  const [showFavourite, setShowFavourite] = useState(false);
+const [credentials,setCredentials] = useState([]);
+const [showPassword,setShowPassword] = useState({});
+const [decryptedPasswords,setDecryptedPasswords] = useState({});
+const [search,setSearch] = useState("");
+const [showFavourite,setShowFavourite] = useState(false);
+const [selectedCategory,setSelectedCategory] = useState("All");
+const [copied,setCopied] = useState(false);
+const [loading,setLoading] = useState(true);
 
-  const navigate = useNavigate();
-
-
-  useEffect(() => {
-    fetchCredentials();
-  }, []);
-
-
-
-  const fetchCredentials = async () => {
-
-    try {
-
-      const response = await api.get("/credentials");
-
-      setCredentials(response.data);
-
-    } catch(error) {
-
-      console.log(error);
-
-    }
-
-  };
+const navigate = useNavigate();
 
 
 
-  const deleteCredential = async(id)=>{
+useEffect(()=>{
 
-    try{
+fetchCredentials();
 
-      await api.delete(`/credentials/${id}`);
-
-      fetchCredentials();
-
-    }
-    catch(error){
-
-      console.log(error);
-
-    }
-
-  };
+},[]);
 
 
 
-  const copyPassword = (password)=>{
+const fetchCredentials = async()=>{
 
-    navigator.clipboard.writeText(password);
+try{
 
-    alert("Password copied");
+const response = await api.get("/credentials");
 
-  };
+setCredentials(response.data);
+
+}
+catch(error){
+
+console.log(error);
+
+}
+finally{
+
+setLoading(false);
+
+}
+
+};
+
+
+
+
+
+const viewPassword = async(id)=>{
+
+try{
+
+const response = await api.get(
+`/credentials/${id}/password`
+);
+
+
+setDecryptedPasswords(prev=>({
+
+...prev,
+
+[id]:response.data
+
+}));
+
+
+setShowPassword(prev=>({
+
+...prev,
+
+[id]:true
+
+}));
+
+
+}
+catch(error){
+
+console.log(error);
+
+alert("Unable to view password");
+
+}
+
+};
+
+
+
+
+
+
+const copyPassword=(password)=>{
+
+
+if(!password){
+
+alert("First view password");
+
+return;
+
+}
+
+
+navigator.clipboard.writeText(password);
+
+
+setCopied(true);
+
+
+setTimeout(()=>{
+
+setCopied(false);
+
+},2000);
+
+
+};
+
+
+
+
+
+const deleteCredential = async(id)=>{
+
+
+try{
+
+await api.delete(
+`/credentials/${id}`
+);
+
+
+fetchCredentials();
+
+
+}
+catch(error){
+
+console.log(error);
+
+}
+
+
+};
+
+
+
+
+
 
 const filteredCredentials = credentials.filter((item)=>{
 
 
 const matchesSearch =
-item.websiteName?.toLowerCase()
+
+item.websiteName
+?.toLowerCase()
 .includes(search.toLowerCase())
+
 ||
-item.category?.toLowerCase()
+
+item.username
+?.toLowerCase()
+.includes(search.toLowerCase())
+
+||
+
+item.category
+?.toLowerCase()
 .includes(search.toLowerCase());
 
 
+
 const matchesFavourite =
-showFavourite ? item.favourite : true;
+showFavourite
+?
+item.favourite
+:
+true;
 
 
-return matchesSearch && matchesFavourite;
+
+const matchesCategory =
+
+selectedCategory==="All"
+
+||
+
+item.category===selectedCategory;
+
+
+
+return (
+
+matchesSearch &&
+
+matchesFavourite &&
+
+matchesCategory
+
+);
 
 
 });
 
- 
+
 
 return(
 
@@ -94,77 +219,266 @@ return(
 <Navbar/>
 
 
-<div className="max-w-4xl mx-auto mt-10 px-4">
+<div className="min-h-screen bg-gray-50 py-10 px-4">
+
+<div className="max-w-6xl mx-auto">
 
 
-<h2 className="text-2xl font-semibold mb-5">
-Saved Credentials
-</h2>
+
+<div className="mb-8 flex justify-between flex-wrap gap-4">
+
+
+<div>
+
+<h1 className="text-3xl font-bold text-gray-900">
+
+Your vault
+
+</h1>
+
+
+<p className="text-gray-500 mt-1 text-sm">
+
+{credentials.length} credentials saved securely
+
+</p>
+
+
+</div>
+
+
+
+<button
+
+onClick={()=>navigate("/add-credential")}
+
+className="bg-black text-white px-5 py-3 rounded-xl"
+
+>
+
++ Add Credential
+
+</button>
+
+
+</div>
+
+
+
+
+
+<div className="bg-white border rounded-2xl p-4 mb-6">
+
+
+<div className="flex flex-wrap gap-3">
+
+
 <input
 
 type="text"
 
-placeholder="Search by website or category..."
+placeholder="Search website, username or category..."
 
 value={search}
 
 onChange={(e)=>setSearch(e.target.value)}
 
-className="w-full border p-3 rounded-xl mb-4"
+className="flex-1 min-w-[260px] border rounded-xl px-4 py-3"
 
 />
+
+
+
+<select
+
+value={selectedCategory}
+
+onChange={(e)=>setSelectedCategory(e.target.value)}
+
+className="border rounded-xl px-4 py-3"
+
+>
+
+
+<option value="All">
+
+All categories
+
+</option>
+
+
+{
+
+[...new Set(
+credentials.map(item=>item.category)
+)]
+
+.filter(Boolean)
+
+.map(category=>(
+
+
+<option key={category} value={category}>
+
+{category}
+
+</option>
+
+
+))
+
+}
+
+
+
+</select>
+
+
 
 
 <button
 
 onClick={()=>setShowFavourite(!showFavourite)}
 
-className="bg-yellow-400 px-4 py-2 rounded-xl mb-6"
+className="border px-5 py-3 rounded-xl"
 
 >
 
 {
+
 showFavourite
 ?
-"Show All Credentials"
+"Show All"
 :
-"⭐ Favourite Only"
-}
+"⭐ Favourites"
 
+}
 
 </button>
 
 
 
-<div className="space-y-5">
+</div>
+</div>
+{
+copied &&
+
+<div className="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">
+
+✓ Password copied to clipboard
+
+</div>
+
+}
+
 
 
 {
+loading ?
+
+(
+
+<div className="bg-white p-10 rounded-2xl border text-center">
+
+<p className="text-gray-400">
+
+Loading your vault...
+
+</p>
+
+</div>
+
+)
+
+:
+
+(
+
+<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+
+{
+
+filteredCredentials.length > 0
+
+?
+
 filteredCredentials.map((item)=>(
 
 
 <div
+
 key={item.id}
-className="bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition"
+
+className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition"
+
 >
 
 
+{/* Header */}
 
-<div className="flex justify-between">
+<div className="flex justify-between items-center mb-5">
 
 
-<h3 className="text-xl font-semibold">
+<div className="flex items-center gap-3">
+
+
+<div className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold">
+
+
+{
+
+item.websiteName
+
+?
+
+item.websiteName.charAt(0).toUpperCase()
+
+:
+
+"?"
+
+}
+
+
+</div>
+
+
+
+<div>
+
+
+<h2 className="font-semibold text-gray-900">
 
 {item.websiteName}
 
-</h3>
+</h2>
+
+
+<p className="text-xs text-gray-500">
+
+{item.category || "Other"}
+
+</p>
+
+
+</div>
+
+
+</div>
+
 
 
 {
+
 item.favourite &&
+
 <span>
+
 ⭐
+
 </span>
+
 }
 
 
@@ -173,63 +487,174 @@ item.favourite &&
 
 
 
-<p className="text-gray-600 mt-2">
-Username: {item.username}
+
+{/* Username */}
+
+<p className="text-xs font-medium text-gray-400 uppercase">
+
+Username
+
 </p>
 
 
-<p className="text-gray-600">
-Category: {item.category}
+<p className="text-sm text-gray-900 mt-1 mb-4 truncate">
+
+{item.username}
+
 </p>
 
 
 
-<div className="flex items-center gap-3 mt-2">
 
 
-<p className="text-gray-600">
+{/* Password */}
 
-Password:
+<p className="text-xs font-medium text-gray-400 uppercase">
+
+Password
+
+</p>
+
+
+
+<div className="relative mt-2">
+
+
+<input
+
+
+type={
+
+showPassword[item.id]
+
+?
+
+"text"
+
+:
+
+"password"
+
+}
+
+
+value={
+
+decryptedPasswords[item.id]
+
+?
+
+decryptedPasswords[item.id]
+
+:
+
+"********"
+
+}
+
+
+readOnly
+
+
+className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 pr-20 text-sm font-mono"
+
+
+
+
+
+/>
+
+
+
+
+
+<div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+
+
+
+
+
+{/* Eye Button */}
+
+<button
+
+
+onClick={()=>{
+
+
+if(showPassword[item.id]){
+
+
+setShowPassword(prev=>({
+
+...prev,
+
+[item.id]:false
+
+
+}));
+
+
+}
+
+else{
+
+
+viewPassword(item.id);
+
+
+}
+
+
+}}
+
+
+
+className="p-1.5 text-gray-400 hover:text-gray-700"
+
+
+>
+
 
 {
+
 showPassword[item.id]
+
 ?
-item.password
+
+"🙈"
+
 :
-"********"
+
+"👁"
+
 }
 
-</p>
-
-
-<button
-
-onClick={()=>setShowPassword({
-
-...showPassword,
-
-[item.id]:!showPassword[item.id]
-
-})}
-
-className="text-blue-600"
->
-
-👁
 
 </button>
 
 
 
+
+
+{/* Copy Button */}
+
 <button
 
-onClick={()=>copyPassword(item.password)}
 
-className="text-sm bg-gray-200 px-3 py-1 rounded-lg"
+onClick={()=>copyPassword(
+decryptedPasswords[item.id]
+)}
+
+
+className="p-1.5 text-gray-400 hover:text-gray-700"
+
 
 >
 
-Copy
+
+📋
+
 
 </button>
 
@@ -238,37 +663,133 @@ Copy
 </div>
 
 
+</div>
 
 
-<div className="mt-5 flex gap-3">
+
+
+
+
+{/* Password Strength */}
+
+
+<span
+
+
+className={
+
+
+decryptedPasswords[item.id] &&
+
+decryptedPasswords[item.id].length >= 8
+
+
+?
+
+
+"inline-block mt-3 bg-green-50 text-green-700 px-2.5 py-1 rounded-full text-xs font-medium"
+
+
+:
+
+"inline-block mt-3 bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full text-xs font-medium"
+
+
+}
+
+
+>
+
+
+{
+
+decryptedPasswords[item.id]
+
+?
+
+(
+
+decryptedPasswords[item.id].length >=8
+
+?
+
+"Strong password"
+
+:
+
+"Weak password"
+
+)
+
+:
+
+"Click 👁 to check password strength"
+
+}
+
+
+
+</span>
+
+
+
+
+
+
+
+{/* Buttons */}
+
+<div className="flex gap-2 mt-5 pt-4 border-t">
+
 
 
 <button
+
 
 onClick={()=>navigate(`/edit-credential/${item.id}`)}
 
-className="bg-black text-white px-4 py-2 rounded-lg"
+
+className="flex-1 bg-black text-white py-2.5 rounded-lg"
+
 
 >
 
+
 Update
 
+
 </button>
+
 
 
 
 
 <button
 
-onClick={()=>deleteCredential(item.id)}
 
-className="bg-red-500 text-white px-4 py-2 rounded-lg"
+onClick={()=>{
+
+
+if(window.confirm("Delete this credential?"))
+
+deleteCredential(item.id);
+
+
+}}
+
+
+
+className="flex-1 bg-red-50 text-red-600 border border-red-200 py-2.5 rounded-lg"
+
 
 >
 
+
 Delete
 
+
 </button>
+
 
 
 </div>
@@ -280,11 +801,39 @@ Delete
 
 ))
 
-}
+
+:
+
+
+
+<div className="col-span-full bg-white p-10 rounded-2xl border text-center">
+
+
+<p className="text-gray-500">
+
+No credentials found
+
+</p>
 
 
 </div>
 
+
+}
+
+
+
+</div>
+
+
+)
+
+
+}
+
+
+
+</div>
 
 </div>
 
