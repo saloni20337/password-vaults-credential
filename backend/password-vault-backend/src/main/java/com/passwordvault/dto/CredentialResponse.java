@@ -14,6 +14,8 @@ public class CredentialResponse {
     private String username;
     private String category;
     private Boolean favourite;
-    
-
+    private boolean shared;
+    private boolean canView;
+    private boolean canEdit;
+    private boolean canDelete;
 }

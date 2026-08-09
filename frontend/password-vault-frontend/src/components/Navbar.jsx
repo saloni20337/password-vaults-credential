@@ -127,8 +127,6 @@ function Navbar(){
   >
     Credentials ▾
   </button>
-
-
   {open && (
 
     <div 
@@ -151,7 +149,13 @@ function Navbar(){
       >
         View Credentials
       </Link>
-
+      <Link
+  to="/manage-shared"
+  onClick={() => setOpen(false)}
+  className="block px-4 py-2 rounded-lg hover:bg-gray-100"
+>
+  Shared Credentials
+</Link>
 
     </div>
 

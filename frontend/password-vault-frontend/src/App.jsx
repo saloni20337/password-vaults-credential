@@ -12,6 +12,7 @@ import ViewCredentials from "./pages/ViewCredentials";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditCredential from "./pages/EditCredential";
+import ManageSharedCredentials from "./pages/ManageSharedCredentials";
 
 
 function App() {
@@ -41,9 +42,7 @@ function App() {
           <AddCredential/>
           </ProtectedRoute>
 }/>
-
-
-           <Route path="/credentials" element={
+          <Route path="/credentials" element={
            <ProtectedRoute>
            <ViewCredentials/>
            </ProtectedRoute>
@@ -63,6 +62,14 @@ function App() {
       <EditCredential/>
     </ProtectedRoute>
   }
+/>
+<Route
+    path="/manage-shared"
+    element={
+        <ProtectedRoute>
+            <ManageSharedCredentials />
+        </ProtectedRoute>
+    }
 />
 
         <Route path="/forgot-password" element={<ForgotPassword/>}/>

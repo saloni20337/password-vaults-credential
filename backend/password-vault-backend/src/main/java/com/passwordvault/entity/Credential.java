@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
@@ -26,7 +25,9 @@ public class Credential {
 
     private String category;
 
-    private boolean favourite;
+    // private boolean favourite;
+
+    private boolean deleted;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
