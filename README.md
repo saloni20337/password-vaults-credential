@@ -259,20 +259,6 @@ npm run dev
 - Permission-Based Sharing
 - Secure Session Handling
 
----
-
-## 🚀 Future Enhancements
-
-- Multi-Factor Authentication (MFA)
-- Password Strength Analyzer
-- Credential Expiry Alerts
-- Audit Logging
-- Activity Monitoring
-- Email Notifications
-- Password Generator
-
----
-
 ## 👩‍💻 Author
 
 ### Saloni Kumari
