@@ -21,9 +21,7 @@ function ViewCredentials() {
   const [selectedCredential, setSelectedCredential] = useState(null);
   const [shareEmail, setShareEmail] = useState("");
 
-  const [canView, setCanView] = useState(true);
-  const [canEdit, setCanEdit] = useState(false);
-  const [canDelete, setCanDelete] = useState(false);
+  const [permission, setPermission] = useState("VIEW_ONLY");
 
   const [shareLoading, setShareLoading] = useState(false);
   const [shareError, setShareError] = useState("");
@@ -32,11 +30,7 @@ function ViewCredentials() {
   useEffect(() => {
     fetchCredentials();
   }, []);
-
-  // =========================
   // FETCH CREDENTIALS
-  // =========================
-
   const fetchCredentials = async () => {
 
     try {
@@ -128,11 +122,8 @@ const viewPassword = async (id) => {
     setSelectedCredential(credential);
 
     setShareEmail("");
-
-    setCanView(true);
-    setCanEdit(false);
-    setCanDelete(false);
-
+   
+   setPermission("VIEW_ONLY");
     setShareError("");
     setShareSuccess(false);
 
@@ -157,36 +148,15 @@ const viewPassword = async (id) => {
       return;
     }
 
-
-    // Cannot give edit/delete without view
-    if (!canView && (canEdit || canDelete)) {
-
-      setShareError(
-        "View permission is required for Edit/Delete"
-      );
-
-      return;
-    }
-
-
     try {
 
       setShareLoading(true);
 
 
-      const requestBody = {
-
-        email: shareEmail.trim(),
-
-        canView: canView,
-
-        canEdit: canEdit,
-
-        canDelete: canDelete
-
-      };
-
-
+  const requestBody = {
+  email: shareEmail.trim(),
+  permission: permission
+};
       console.log(
         "Share Request:",
         requestBody
@@ -254,12 +224,7 @@ const viewPassword = async (id) => {
 
     }
   };
-
-
-  // =========================
   // FILTER
-  // =========================
-
   const filteredCredentials =
     credentials.filter((item) => {
 
@@ -618,12 +583,7 @@ const viewPassword = async (id) => {
         </div>
 
       </div>
-
-
-      {/* ========================= */}
       {/* SHARE MODAL */}
-      {/* ========================= */}
-
       {
         shareOpen && (
 
@@ -689,79 +649,31 @@ const viewPassword = async (id) => {
 
 
               {/* PERMISSIONS */}
-
               <label className="block text-sm font-medium mb-3">
+  Permission Level
+</label>
 
-                Permissions
+<select
+  value={permission}
+  onChange={(e) =>
+    setPermission(e.target.value)
+  }
+  className="border rounded-xl px-4 py-3 w-full mb-5"
+>
+  <option value="VIEW_ONLY">
+    👁 View Only
+  </option>
 
-              </label>
+  <option value="EDIT_ACCESS">
+    ✏️ Edit Access
+  </option>
 
+  <option value="FULL_MANAGEMENT">
+    🔥 Full Management
+  </option>
+</select>
 
-              {/* VIEW */}
-
-              <label className="flex items-center gap-3 mb-3">
-
-                <input
-                  type="checkbox"
-                  checked={canView}
-                  onChange={(e) =>
-                    setCanView(
-                      e.target.checked
-                    )
-                  }
-                  className="w-4 h-4"
-                />
-
-                <span>
-                  👁 View credential
-                </span>
-
-              </label>
-
-
-              {/* EDIT */}
-
-              <label className="flex items-center gap-3 mb-3">
-
-                <input
-                  type="checkbox"
-                  checked={canEdit}
-                  onChange={(e) =>
-                    setCanEdit(
-                      e.target.checked
-                    )
-                  }
-                  className="w-4 h-4"
-                />
-
-                <span>
-                  ✏️ Edit credential
-                </span>
-
-              </label>
-
-
-              {/* DELETE */}
-
-              <label className="flex items-center gap-3 mb-5">
-
-                <input
-                  type="checkbox"
-                  checked={canDelete}
-                  onChange={(e) =>
-                    setCanDelete(
-                      e.target.checked
-                    )
-                  }
-                  className="w-4 h-4"
-                />
-
-                <span>
-                  🗑 Delete credential
-                </span>
-
-              </label>
-
+             
 
               {/* ERROR */}
 

@@ -190,53 +190,47 @@ public class CredentialShareService {
 
 
         // At least one permission required
-        if (!request.isCanView()
-                && !request.isCanEdit()
-                && !request.isCanDelete()) {
+       
+       if (request.getPermission() == null
+        || request.getPermission().isBlank()) {
 
-            throw new RuntimeException(
-                    "Select at least one permission"
-            );
-        }
+    throw new RuntimeException(
+            "Permission is required"
+    );
+}
+        SharedCredential sharedCredential = new SharedCredential();
+         sharedCredential.setCredential(credential);
+sharedCredential.setSharedByUser(owner);
+sharedCredential.setSharedWithUser(receiver);
 
+switch (request.getPermission()) {
+    case "VIEW_ONLY":
+        sharedCredential.setCanView(true);
+        sharedCredential.setCanEdit(false);
+        sharedCredential.setCanDelete(false);
+        sharedCredential.setCanManageSharing(false);
+        break;
 
-        SharedCredential sharedCredential =
-                new SharedCredential();
+    case "EDIT_ACCESS":
+        sharedCredential.setCanView(true);
+        sharedCredential.setCanEdit(true);
+        sharedCredential.setCanDelete(false);
+        sharedCredential.setCanManageSharing(false);
+        break;
 
+    case "FULL_MANAGEMENT":
+        sharedCredential.setCanView(true);
+        sharedCredential.setCanEdit(true);
+        sharedCredential.setCanDelete(true);
+        sharedCredential.setCanManageSharing(true);
+        break;
 
-        sharedCredential.setCredential(
-                credential
-        );
+    default:
+        throw new RuntimeException("Invalid Permission");
+}
 
+sharedCredentialRepository.save(sharedCredential);
 
-        sharedCredential.setSharedByUser(
-                owner
-        );
-
-
-        sharedCredential.setSharedWithUser(
-                receiver
-        );
-
-
-        sharedCredential.setCanView(
-                request.isCanView()
-        );
-
-
-        sharedCredential.setCanEdit(
-                request.isCanEdit()
-        );
-
-
-        sharedCredential.setCanDelete(
-                request.isCanDelete()
-        );
-
-
-        sharedCredentialRepository.save(
-                sharedCredential
-        );
 
 
         return "Credential shared successfully";

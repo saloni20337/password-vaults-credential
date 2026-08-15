@@ -9,9 +9,5 @@ public class ShareCredentialRequest {
 
     private String email;
 
-    private boolean canView;
-
-    private boolean canEdit;
-
-    private boolean canDelete;
+    private String permission;
 }

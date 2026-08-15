@@ -27,5 +27,5 @@ public class SharedCredential {
     private boolean canView;
     private boolean canEdit;
     private boolean canDelete;
-    
+    private boolean canManageSharing;
 }
