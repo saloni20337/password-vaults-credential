@@ -1,256 +1,194 @@
-import Navbar from "../components/Navbar";
 import { useState } from "react";
+import Navbar from "../components/Navbar";
 import api from "../services/api";
 
 function Profile() {
+  const [profile, setProfile] = useState({
+    name: localStorage.getItem("name") || "User",
+    email: localStorage.getItem("email") || "user@example.com",
+  });
 
-  const [name, setName] = useState(
-    localStorage.getItem("name") || "User"
-  );
-
-  const [userEmail, setUserEmail] = useState(
-    localStorage.getItem("email") || "user@example.com"
-  );
-
+  const [form, setForm] = useState(profile);
   const [edit, setEdit] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const [newName, setNewName] = useState(name);
+  const updateField = (field, value) => {
+    setForm((current) => ({
+      ...current,
+      [field]: value,
+    }));
+  };
 
-  const [newEmail, setNewEmail] = useState(userEmail);
+  const saveProfile = async () => {
+    try {
+      setSaving(true);
 
+      await api.put(
+        "/user/profile/update",
+        {
+          oldEmail: profile.email,
+          name: form.name,
+          email: form.email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
+      setProfile(form);
+      localStorage.setItem("name", form.name);
+      localStorage.setItem("email", form.email);
+      setEdit(false);
 
-const saveProfile = async()=>{
-
-try{
-
-await api.put(
-"/user/profile/update",
-{
-  oldEmail:userEmail,
-  name:newName,
-  email:newEmail
-},
-{
-  headers:{
-    Authorization:`Bearer ${localStorage.getItem("token")}`
-  }
-}
-);
-
-
-setName(newName);
-setUserEmail(newEmail);
-
-
-localStorage.setItem("name",newName);
-localStorage.setItem("email",newEmail);
-
-
-setEdit(false);
-
-
-alert("Profile Updated Successfully");
-
-
-}
-catch(error){
-
-console.log(error.response);
-
-alert(
-error.response?.data || 
-"Profile Update Failed"
-);
-
-}
-
-};
-
+      alert("Profile Updated Successfully");
+    } catch (error) {
+      console.error("Profile update failed:", error);
+      alert(error.response?.data || "Profile Update Failed");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const cancelEdit = () => {
-
-    setNewName(name);
-    setNewEmail(userEmail);
-
+    setForm(profile);
     setEdit(false);
   };
 
-
+  const infoItems = [
+    ["Security", "🔐 JWT Protected"],
+    ["Account Type", "Password Vault User"],
+  ];
 
   return (
-    <>
+    <div className="min-h-screen bg-slate-50 text-slate-950">
       <Navbar />
 
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-50 flex justify-center items-center px-4">
-
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-indigo-100/50 border border-slate-100 border-t-4 border-t-indigo-500 p-6">
-
-          {/* Header */}
-
-          <div className="text-center">
-
-            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-indigo-600 to-violet-600 text-white flex items-center justify-center text-3xl font-bold">
-
-              {name.charAt(0).toUpperCase()}
-
+      <main className="mx-auto flex max-w-5xl justify-center px-4 py-8 sm:px-6 lg:py-12">
+        <section className="w-full max-w-2xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-100 bg-gradient-to-br from-slate-950 to-slate-800 px-6 py-8 text-center text-white sm:px-10">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-white text-3xl font-bold text-slate-950 shadow-lg">
+              {profile.name.charAt(0).toUpperCase()}
             </div>
 
-            <h1 className="text-xl font-bold mt-4 text-slate-900">
-              {name}
+            <h1 className="mt-4 text-2xl font-bold">
+              {profile.name}
             </h1>
 
-            <p className="text-sm text-slate-500 mt-1">
-              {userEmail}
+            <p className="mt-1 text-sm text-slate-300">
+              {profile.email}
             </p>
 
-            <span className="inline-block mt-3 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700">
-              ● Active
+            <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              Active Account
             </span>
-
           </div>
 
-
-
-          {/* Information */}
-
-          <div className="mt-6 space-y-3">
-
-            {/* Name */}
-
-            <div className="bg-indigo-50/40 border border-indigo-100 rounded-xl p-3">
-
-              <p className="text-xs text-slate-500">
-                Name
+          <div className="p-6 sm:p-8">
+            <div className="mb-6">
+              <h2 className="text-lg font-bold">Profile Information</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Manage your account details and security information.
               </p>
-
-              {
-                edit ? (
-
-                  <input
-                    type="text"
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    className="w-full mt-2 border border-indigo-200 bg-white rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-
-                ) : (
-
-                  <p className="text-sm font-semibold mt-1 text-slate-900">
-                    {name}
-                  </p>
-
-                )
-              }
-
             </div>
 
+            <div className="space-y-4">
+              <ProfileField
+                label="Name"
+                value={form.name}
+                edit={edit}
+                type="text"
+                onChange={(value) => updateField("name", value)}
+              />
 
+              <ProfileField
+                label="Email Address"
+                value={form.email}
+                edit={edit}
+                type="email"
+                onChange={(value) => updateField("email", value)}
+              />
 
-            {/* Email */}
-
-            <div className="bg-indigo-50/40 border border-indigo-100 rounded-xl p-3">
-
-              <p className="text-xs text-slate-500">
-                Email Address
-              </p>
-
-              {
-                edit ? (
-
-                  <input
-                    type="email"
-                    value={newEmail}
-                    onChange={(e) => setNewEmail(e.target.value)}
-                    className="w-full mt-2 border border-indigo-200 bg-white rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-
-                ) : (
-
-                  <p className="text-sm font-semibold mt-1 text-slate-900">
-                    {userEmail}
-                  </p>
-
-                )
-              }
-
-            </div>
-
-
-
-            {/* Security */}
-
-            <div className="bg-indigo-50/40 border border-indigo-100 rounded-xl p-3">
-
-              <p className="text-xs text-slate-500">
-                Security
-              </p>
-
-              <p className="text-sm font-semibold mt-1 text-slate-900">
-                🔐 JWT Protected
-              </p>
-
-            </div>
-
-
-
-            {/* Account Type */}
-
-            <div className="bg-indigo-50/40 border border-indigo-100 rounded-xl p-3">
-
-              <p className="text-xs text-slate-500">
-                Account Type
-              </p>
-
-              <p className="text-sm font-semibold mt-1 text-slate-900">
-                Password Vault User
-              </p>
-
-            </div>
-
-          </div>
-
-
-
-          {/* Buttons */}
-
-          {
-            edit ? (
-
-              <div className="flex gap-2 mt-6">
-
-                <button
-                  onClick={saveProfile}
-                  className="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white py-3 rounded-xl text-sm font-semibold transition-all"
+              {infoItems.map(([label, value]) => (
+                <div
+                  key={label}
+                  className="rounded-xl border border-slate-200 bg-slate-50 p-4"
                 >
-                  Save Changes
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+                    {label}
+                  </p>
+
+                  <p className="mt-2 text-sm font-semibold text-slate-900">
+                    {value}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {edit ? (
+              <div className="mt-7 flex gap-3">
+                <button
+                  type="button"
+                  onClick={saveProfile}
+                  disabled={saving}
+                  className="flex-1 rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
                 </button>
 
                 <button
+                  type="button"
                   onClick={cancelEdit}
-                  className="flex-1 border border-slate-200 text-slate-600 py-3 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-all"
+                  disabled={saving}
+                  className="flex-1 rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-60"
                 >
                   Cancel
                 </button>
-
               </div>
-
             ) : (
-
               <button
+                type="button"
                 onClick={() => setEdit(true)}
-                className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl text-sm font-semibold transition-all"
+                className="mt-7 w-full rounded-xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
               >
                 Edit Profile
               </button>
+            )}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
 
-            )
-          }
+function ProfileField({
+  label,
+  value,
+  type,
+  edit,
+  onChange,
+}) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+        {label}
+      </p>
 
-        </div>
-
-      </div>
-    </>
+      {edit ? (
+        <input
+          type={type}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-slate-950 focus:ring-2 focus:ring-slate-200"
+        />
+      ) : (
+        <p className="mt-2 text-sm font-semibold text-slate-900">
+          {value}
+        </p>
+      )}
+    </div>
   );
 }
 

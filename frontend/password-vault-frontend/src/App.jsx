@@ -13,6 +13,8 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import EditCredential from "./pages/EditCredential";
 import ManageSharedCredentials from "./pages/ManageSharedCredentials";
+import LoginActivity from "./pages/LoginActivity";
+
 
 
 function App() {
@@ -54,6 +56,14 @@ function App() {
       <Profile />
     </ProtectedRoute>
   }
+/>
+<Route
+    path="/login-activity"
+    element={
+        <ProtectedRoute>
+            <LoginActivity />
+        </ProtectedRoute>
+    }
 />
 <Route
   path="/edit-credential/:id"

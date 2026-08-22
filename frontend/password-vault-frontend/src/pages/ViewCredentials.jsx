@@ -1,757 +1,530 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Copy,
+  Edit3,
+  Eye,
+  EyeOff,
+  Heart,
+  Plus,
+  Share2,
+  Trash2,
+  X,
+} from "lucide-react";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
 
 function ViewCredentials() {
-
   const navigate = useNavigate();
 
   const [credentials, setCredentials] = useState([]);
-  const [showPassword, setShowPassword] = useState({});
-  const [decryptedPasswords, setDecryptedPasswords] = useState({});
+  const [passwords, setPasswords] = useState({});
+  const [visible, setVisible] = useState({});
   const [search, setSearch] = useState("");
-  const [showFavourite, setShowFavourite] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [category, setCategory] = useState("All");
+  const [favouritesOnly, setFavouritesOnly] = useState(false);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // SHARE STATES
-  const [shareOpen, setShareOpen] = useState(false);
-  const [selectedCredential, setSelectedCredential] = useState(null);
-  const [shareEmail, setShareEmail] = useState("");
+  const [share, setShare] = useState({
+    open: false,
+    credential: null,
+    email: "",
+    permission: "VIEW_ONLY",
+    loading: false,
+    error: "",
+    success: false,
+  });
 
-  const [permission, setPermission] = useState("VIEW_ONLY");
-
-  const [shareLoading, setShareLoading] = useState(false);
-  const [shareError, setShareError] = useState("");
-  const [shareSuccess, setShareSuccess] = useState(false);
+  const fetchCredentials = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/credentials");
+      setCredentials(response.data);
+    } catch (error) {
+      console.error("Failed to fetch credentials:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchCredentials();
-  }, []);
-  // FETCH CREDENTIALS
-  const fetchCredentials = async () => {
-
-    try {
-
-      const res = await api.get("/credentials");
-
-      console.log("Credentials:", res.data);
-
-      setCredentials(res.data);
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-  };
-const viewPassword = async (id) => {
-
-    try {
-
-      const res = await api.get(
-        `/credentials/${id}/password`
-      );
-
-      setDecryptedPasswords(prev => ({
-        ...prev,
-        [id]: res.data
-      }));
-
-      setShowPassword(prev => ({
-        ...prev,
-        [id]: true
-      }));
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert(
-        error.response?.data ||
-        "Unable to view password"
-      );
-
-    }
-  };
-  const copyPassword = (password) => {
-
-    if (!password) {
-
-      alert("First view password");
-
-      return;
-    }
-
-    navigator.clipboard.writeText(password);
-
-    setCopied(true);
-
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-  };
-  const deleteCredential = async (id) => {
-
-    try {
-
-      await api.delete(
-        `/credentials/${id}`
-      );
-
-      fetchCredentials();
-
-    } catch (error) {
-
-      console.log(error);
-
-      alert(
-        error.response?.data ||
-        "Unable to delete credential"
-      );
-    }
-  };
-  const openShare = (credential) => {
-
-    setSelectedCredential(credential);
-
-    setShareEmail("");
-   
-   setPermission("VIEW_ONLY");
-    setShareError("");
-    setShareSuccess(false);
-
-    setShareOpen(true);
-  };
-
-  const handleShare = async (e) => {
-
-    e.preventDefault();
-
-    setShareError("");
-    setShareSuccess(false);
-
-
-    // Email validation
-    if (!shareEmail.trim()) {
-
-      setShareError(
-        "Please enter employee email"
-      );
-
-      return;
-    }
-
-    try {
-
-      setShareLoading(true);
-
-
-  const requestBody = {
-  email: shareEmail.trim(),
-  permission: permission
-};
-      console.log(
-        "Share Request:",
-        requestBody
-      );
-
-
-      const response = await api.post(
-
-        `/credentials/${selectedCredential.id}/share`,
-
-        requestBody
-
-      );
-
-
-      console.log(
-        "Share Response:",
-        response.data
-      );
-
-
-      setShareSuccess(true);
-
-      setShareError("");
-
-      setShareEmail("");
-
-
-    } catch (error) {
-
-      console.log(
-        "Share Error:",
-        error
-      );
-
-
-      let message =
-        "Unable to share credential";
-
-
-      if (error.response?.data) {
-
-        if (
-          typeof error.response.data === "string"
-        ) {
-
-          message = error.response.data;
-
-        } else if (
-          error.response.data.message
-        ) {
-
-          message =
-            error.response.data.message;
-        }
-      }
-
-
-      setShareError(message);
-
-
-    } finally {
-
-      setShareLoading(false);
-
-    }
-  };
-  // FILTER
-  const filteredCredentials =
-    credentials.filter((item) => {
-
-      const searchMatch =
-
-        item.websiteName
-          ?.toLowerCase()
-          .includes(search.toLowerCase())
-
-        ||
-
-        item.username
-          ?.toLowerCase()
-          .includes(search.toLowerCase())
-
-        ||
-
-        item.category
-          ?.toLowerCase()
-          .includes(search.toLowerCase());
-
-
-      const favouriteMatch =
-
-        showFavourite
-          ? item.favourite
-          : true;
-
-
-      const categoryMatch =
-
-        selectedCategory === "All"
-          ||
-          item.category === selectedCategory;
-
-
-      return (
-        searchMatch &&
-        favouriteMatch &&
-        categoryMatch
-      );
-
-    });
-
-
-  return (
-
-    <>
-
-      {/* NAVBAR */}
-
-      <Navbar />
-
-
-      <div className="p-6 max-w-7xl mx-auto">
-
-
-        {/* HEADER */}
-
-        <div className="flex justify-between items-center mb-6">
-
-          <h1 className="text-2xl font-bold">
-
-            My Credentials
-
-          </h1>
-
-
-          <button
-            onClick={() =>
-              navigate("/add-credential")
-            }
-            className="bg-indigo-600 text-white px-5 py-3 rounded-xl"
-          >
-
-            + Add Credential
-
-          </button>
-
-        </div>
-
-
-        {/* SEARCH + CATEGORY */}
-
-        <div className="flex gap-3 mb-5">
-
-          <input
-            value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
-            placeholder="Search credentials..."
-            className="flex-1 border rounded-xl px-4 py-3"
-          />
-
-
-          <select
-            value={selectedCategory}
-            onChange={(e) =>
-              setSelectedCategory(e.target.value)
-            }
-            className="border rounded-xl px-4 py-3"
-          >
-
-            <option value="All">
-              All Categories
-            </option>
-
-            {
-              [
-                ...new Set(
-                  credentials.map(
-                    c => c.category
-                  )
-                )
-              ]
-              .filter(Boolean)
-              .map(category => (
-
-                <option
-                  key={category}
-                  value={category}
-                >
-                  {category}
-                </option>
-
-              ))
-            }
-
-          </select>
-
-
-          <button
-            onClick={() =>
-              setShowFavourite(!showFavourite)
-            }
-            className="border rounded-xl px-5"
-          >
-
-            {
-              showFavourite
-                ? "Show All"
-                : "⭐ Favourites"
-            }
-
-          </button>
-
-        </div>
-
-
-        {/* COPIED MESSAGE */}
-
-        {
-          copied && (
-
-            <div className="mb-4 bg-green-100 text-green-700 px-4 py-3 rounded-xl">
-
-              Password copied successfully!
-
-            </div>
-
-          )
-        }
-
-
-        {/* LOADING */}
-
-        {
-          loading && (
-
-            <div className="text-center py-10">
-
-              Loading credentials...
-
-            </div>
-
-          )
-        }
-
-
-        {/* EMPTY */}
-
-        {
-          !loading &&
-          filteredCredentials.length === 0 && (
-
-            <div className="text-center py-10 text-gray-500">
-
-              No credentials found.
-
-            </div>
-
-          )
-        }
-
-
-        {/* CREDENTIAL CARDS */}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-
-          {
-            filteredCredentials.map(item => (
-
-              <div
-                key={item.id}
-                className="border rounded-2xl p-5 shadow-sm bg-white"
-              >
-
-                {/* WEBSITE */}
-
-                <div className="flex justify-between mb-2">
-
-                  <h2 className="text-lg font-bold">
-
-                    {item.websiteName}
-
-                  </h2>
-
-
-                  {
-                    item.favourite && (
-
-                      <span>
-                        ⭐
-                      </span>
-
-                    )
-                  }
-
-                </div>
-
-
-                {/* CATEGORY */}
-
-                <p className="text-sm text-gray-500 mb-3">
-
-                  {item.category}
-
-                </p>
-
-
-                {/* USERNAME */}
-
-                <p className="text-sm mb-2">
-
-                  <b>Username:</b>{" "}
-
-                  {item.username}
-
-                </p>
-
-
-               {/* PASSWORD */}
-
-<div className="flex gap-2 mb-4">
-
-  <input
-    readOnly
-    type={
-      showPassword[item.id]
-        ? "text"
-        : "password"
-    }
-    value={
-      showPassword[item.id]
-        ? decryptedPasswords[item.id] || ""
-        : "********"
-    }
-    className="border rounded-lg px-3 py-2 flex-1"
-  />
-
-  {item.canView && (
-    <>
-      <button
-        onClick={() => {
-          showPassword[item.id]
-            ? setShowPassword({
-                ...showPassword,
-                [item.id]: false
-              })
-            : viewPassword(item.id);
-        }}
-        className="border px-3 rounded-lg"
-      >
-        {showPassword[item.id] ? "🙈" : "👁"}
-      </button>
-
-      <button
-        onClick={() =>
-          copyPassword(
-            decryptedPasswords[item.id]
-          )
-        }
-        className="border px-3 rounded-lg"
-      >
-        📋
-      </button>
-    </>
-  )}
-
-</div>
-
-               
-       {/* BUTTONS */}
-
-<div className="flex gap-2">
-
-  {/* EDIT */}
-
-  {item.canEdit && (
-    <button
-      onClick={() =>
-        navigate(`/edit-credential/${item.id}`)
-      }
-      className="bg-indigo-600 text-white flex-1 py-2 rounded-lg"
-    >
-      Edit
-    </button>
-  )}
-
-
-  {/* SHARE */}
-
- 
-{!item.shared && (
-  <button
-    onClick={() => openShare(item)}
-    className="border flex-1 py-2 rounded-lg"
-  >
-    📤 Share
-  </button>
-)}
-
-  {/* DELETE */}
-
-  {item.canDelete && (
-    <button
-      onClick={() => {
-        if (window.confirm("Delete credential?")) {
-          deleteCredential(item.id);
-        }
-      }}
-      className="border text-red-600 flex-1 py-2 rounded-lg"
-    >
-      Delete
-    </button>
-  )}
-
-</div>
-
-              </div>
-
-            ))
-          }
-
-        </div>
-
-      </div>
-      {/* SHARE MODAL */}
-      {
-        shareOpen && (
-
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-
-            <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
-
-               {/* MODAL HEADER */}
-  <div className="flex justify-between items-center mb-2">
-
-              <h2 className="text-xl font-bold mb-2">
-
-                Share Credential
-
-              </h2>
-               {/* CLOSE BUTTON */}
-    <button
-      type="button"
-      onClick={() => {
-        setShareOpen(false);
-        setShareEmail("");
-        setShareError("");
-        setShareSuccess(false);
-      }}
-      className="text-gray-500 hover:text-red-600 text-2xl font-bold"
-    >
-      ×
-    </button>
-
-  </div>
-
-              <p className="text-gray-500 text-sm mb-5">
-
-                Share{" "}
-
-                <b>
-                  {selectedCredential?.websiteName}
-                </b>
-
-                {" "}with another employee.
-
-              </p>
-
-
-              {/* EMAIL */}
-
-              <label className="block text-sm font-medium mb-2">
-
-                Employee Email
-
-              </label>
-
-
-              <input
-                type="email"
-                placeholder="employee@gmail.com"
-                value={shareEmail}
-                onChange={(e) =>
-                  setShareEmail(e.target.value)
-                }
-                className="border rounded-xl px-4 py-3 w-full mb-5"
-              />
-
-
-              {/* PERMISSIONS */}
-              <label className="block text-sm font-medium mb-3">
-  Permission Level
-</label>
-
-<select
-  value={permission}
-  onChange={(e) =>
-    setPermission(e.target.value)
-  }
-  className="border rounded-xl px-4 py-3 w-full mb-5"
->
-  <option value="VIEW_ONLY">
-    👁 View Only
-  </option>
-
-  <option value="EDIT_ACCESS">
-    ✏️ Edit Access
-  </option>
-
-  <option value="FULL_MANAGEMENT">
-    🔥 Full Management
-  </option>
-</select>
-
-             
-
-              {/* ERROR */}
-
-              {
-                shareError && (
-
-                  <div className="bg-red-100 text-red-700 px-4 py-3 rounded-xl mb-4">
-
-                    {shareError}
-
-                  </div>
-
-                )
-              }
-
-
-              {/* SUCCESS */}
-
-              {
-                shareSuccess && (
-
-                  <div className="bg-green-100 text-green-700 px-4 py-3 rounded-xl mb-4">
-
-                    Credential shared successfully! ✅
-
-                  </div>
-
-                )
-              }
-
-
-              {/* SHARE BUTTON */}
-
-              <button
-                onClick={handleShare}
-                disabled={shareLoading}
-                className="bg-indigo-600 text-white w-full py-3 rounded-xl disabled:opacity-50"
-              >
-
-                {
-                  shareLoading
-                    ? "Sharing..."
-                    : "Share Credential"
-                }
-
-              </button>
-
-
-              {/* CANCEL */}
-
-              <button
-                onClick={() => {
-
-                  setShareOpen(false);
-                  setShareEmail("");
-                  setShareError("");
-                  setShareSuccess(false);
-
-                }}
-                className="border w-full mt-3 py-3 rounded-xl"
-              >
-
-                Cancel
-
-              </button>
-
-            </div>
-
-          </div>
-
-        )
-
-      }
-
-    </>
-
+  }, [fetchCredentials]);
+
+  const categories = useMemo(
+    () => [
+      "All",
+      ...new Set(credentials.map((item) => item.category).filter(Boolean)),
+    ],
+    [credentials]
   );
 
+  const filteredCredentials = useMemo(() => {
+    const query = search.toLowerCase();
+
+    return credentials.filter((item) => {
+      const matchesSearch = [
+        item.websiteName,
+        item.username,
+        item.category,
+      ].some((value) => value?.toLowerCase().includes(query));
+
+      const matchesCategory =
+        category === "All" || item.category === category;
+
+      const matchesFavourite =
+        !favouritesOnly || item.favourite;
+
+      return matchesSearch && matchesCategory && matchesFavourite;
+    });
+  }, [credentials, search, category, favouritesOnly]);
+
+  const viewPassword = async (id) => {
+    try {
+      const response = await api.get(`/credentials/${id}/password`);
+
+      setPasswords((current) => ({
+        ...current,
+        [id]: response.data,
+      }));
+
+      setVisible((current) => ({
+        ...current,
+        [id]: true,
+      }));
+    } catch (error) {
+      alert(error.response?.data || "Unable to view password");
+    }
+  };
+
+  const copyPassword = async (password) => {
+    if (!password) {
+      alert("First view password");
+      return;
+    }
+
+    await navigator.clipboard.writeText(password);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const deleteCredential = async (id) => {
+    try {
+      await api.delete(`/credentials/${id}`);
+      fetchCredentials();
+    } catch (error) {
+      alert(error.response?.data || "Unable to delete credential");
+    }
+  };
+
+  const openShare = (credential) => {
+    setShare({
+      open: true,
+      credential,
+      email: "",
+      permission: "VIEW_ONLY",
+      loading: false,
+      error: "",
+      success: false,
+    });
+  };
+
+  const closeShare = () => {
+    setShare((current) => ({
+      ...current,
+      open: false,
+      email: "",
+      error: "",
+      success: false,
+    }));
+  };
+
+  const handleShare = async (event) => {
+    event.preventDefault();
+
+    if (!share.email.trim()) {
+      setShare((current) => ({
+        ...current,
+        error: "Please enter employee email",
+      }));
+      return;
+    }
+
+    try {
+      setShare((current) => ({
+        ...current,
+        loading: true,
+        error: "",
+      }));
+
+      await api.post(
+        `/credentials/${share.credential.id}/share`,
+        {
+          email: share.email.trim(),
+          permission: share.permission,
+        }
+      );
+
+      setShare((current) => ({
+        ...current,
+        loading: false,
+        email: "",
+        success: true,
+      }));
+    } catch (error) {
+      setShare((current) => ({
+        ...current,
+        loading: false,
+        error:
+          error.response?.data?.message ||
+          error.response?.data ||
+          "Unable to share credential",
+      }));
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-950">
+      <Navbar />
+
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+        <header className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Secure vault
+            </p>
+
+            <h1 className="mt-1 text-3xl font-bold tracking-tight">
+              My Credentials
+            </h1>
+
+            <p className="mt-2 text-sm text-slate-500">
+              Manage and securely access your saved accounts.
+            </p>
+          </div>
+
+          <button
+            onClick={() => navigate("/add-credential")}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+          >
+            <Plus size={17} />
+            Add Credential
+          </button>
+        </header>
+
+        <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row">
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search by website, username or category..."
+              className="flex-1 rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-slate-950 focus:ring-2 focus:ring-slate-200"
+            />
+
+            <select
+              value={category}
+              onChange={(event) => setCategory(event.target.value)}
+              className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-slate-950"
+            >
+              {categories.map((item) => (
+                <option key={item} value={item}>
+                  {item === "All" ? "All Categories" : item}
+                </option>
+              ))}
+            </select>
+
+            <button
+              onClick={() => setFavouritesOnly((value) => !value)}
+              className={`rounded-lg border px-4 py-2.5 text-sm font-semibold transition ${
+                favouritesOnly
+                  ? "border-slate-950 bg-slate-950 text-white"
+                  : "border-slate-300 text-slate-700 hover:bg-slate-50"
+              }`}
+            >
+              <Heart size={15} className="mr-2 inline" />
+              {favouritesOnly ? "Show All" : "Favourites"}
+            </button>
+          </div>
+        </div>
+
+        {copied && (
+          <div className="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+            Password copied successfully.
+          </div>
+        )}
+
+        {loading ? (
+          <div className="py-16 text-center text-sm text-slate-500">
+            Loading credentials...
+          </div>
+        ) : filteredCredentials.length === 0 ? (
+          <div className="rounded-xl border border-slate-200 bg-white py-16 text-center">
+            <p className="font-semibold text-slate-800">
+              No credentials found
+            </p>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Try changing your search or filter.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {filteredCredentials.map((item) => (
+              <CredentialCard
+                key={item.id}
+                item={item}
+                visible={visible[item.id]}
+                password={passwords[item.id]}
+                onView={() =>
+                  visible[item.id]
+                    ? setVisible((current) => ({
+                        ...current,
+                        [item.id]: false,
+                      }))
+                    : viewPassword(item.id)
+                }
+                onCopy={() => copyPassword(passwords[item.id])}
+                onEdit={() =>
+                  navigate(`/edit-credential/${item.id}`)
+                }
+                onShare={() => openShare(item)}
+                onDelete={() => {
+                  if (window.confirm("Delete credential?")) {
+                    deleteCredential(item.id);
+                  }
+                }}
+              />
+            ))}
+          </div>
+        )}
+      </main>
+
+      {share.open && (
+        <ShareModal
+          share={share}
+          setShare={setShare}
+          onClose={closeShare}
+          onSubmit={handleShare}
+        />
+      )}
+    </div>
+  );
+}
+
+function CredentialCard({
+  item,
+  visible,
+  password,
+  onView,
+  onCopy,
+  onEdit,
+  onShare,
+  onDelete,
+}) {
+  return (
+    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 font-bold text-slate-700">
+            {item.websiteName?.[0]?.toUpperCase() || "?"}
+          </div>
+
+          <div className="min-w-0">
+            <h2 className="truncate font-bold text-slate-900">
+              {item.websiteName}
+            </h2>
+
+            <p className="mt-0.5 text-xs text-slate-500">
+              {item.category || "General"}
+            </p>
+          </div>
+        </div>
+
+        {item.favourite && (
+          <Heart size={17} fill="currentColor" className="shrink-0 text-rose-500" />
+        )}
+      </div>
+
+      <div className="space-y-3">
+        <InfoRow label="Username" value={item.username} />
+
+        {item.canView ? (
+          <div>
+            <p className="mb-1 text-xs font-medium text-slate-500">
+              Password
+            </p>
+
+            <div className="flex gap-2">
+              <input
+                readOnly
+                type={visible ? "text" : "password"}
+                value={visible ? password || "" : "••••••••"}
+                className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none"
+              />
+
+              <IconButton onClick={onView}>
+                {visible ? <EyeOff size={16} /> : <Eye size={16} />}
+              </IconButton>
+
+              <IconButton onClick={onCopy}>
+                <Copy size={16} />
+              </IconButton>
+            </div>
+          </div>
+        ) : (
+          <div className="rounded-lg bg-slate-50 px-3 py-2 text-xs text-slate-500">
+            Password viewing is not permitted.
+          </div>
+        )}
+      </div>
+
+      <div className="mt-5 flex gap-2">
+        {item.canEdit && (
+          <ActionButton onClick={onEdit} primary>
+            <Edit3 size={15} />
+            Edit
+          </ActionButton>
+        )}
+
+        {!item.shared && (
+          <ActionButton onClick={onShare}>
+            <Share2 size={15} />
+            Share
+          </ActionButton>
+        )}
+
+        {item.canDelete && (
+          <ActionButton onClick={onDelete} danger>
+            <Trash2 size={15} />
+          </ActionButton>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function InfoRow({ label, value }) {
+  return (
+    <div>
+      <p className="text-xs font-medium text-slate-500">{label}</p>
+      <p className="mt-1 truncate text-sm font-semibold text-slate-800">
+        {value || "Not available"}
+      </p>
+    </div>
+  );
+}
+
+function IconButton({ onClick, children }) {
+  return (
+    <button
+      onClick={onClick}
+      className="rounded-lg border border-slate-200 px-2.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
+    >
+      {children}
+    </button>
+  );
+}
+
+function ActionButton({ onClick, children, primary, danger }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2 text-xs font-semibold transition ${
+        primary
+          ? "bg-slate-950 text-white hover:bg-slate-800"
+          : danger
+            ? "border border-red-200 text-red-600 hover:bg-red-50"
+            : "border border-slate-200 text-slate-700 hover:bg-slate-50"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ShareModal({ share, setShare, onClose, onSubmit }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 backdrop-blur-sm">
+      <form
+        onSubmit={onSubmit}
+        className="w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+      >
+        <div className="flex items-center justify-between border-b border-slate-100 p-6">
+          <div>
+            <h2 className="font-bold text-slate-950">Share Credential</h2>
+            <p className="mt-1 text-xs text-slate-500">
+              Share {share.credential?.websiteName} securely.
+            </p>
+          </div>
+
+          <button type="button" onClick={onClose}>
+            <X className="text-slate-400 hover:text-slate-950" />
+          </button>
+        </div>
+
+        <div className="space-y-4 p-6">
+          <input
+            type="email"
+            placeholder="employee@gmail.com"
+            value={share.email}
+            onChange={(event) =>
+              setShare((current) => ({
+                ...current,
+                email: event.target.value,
+              }))
+            }
+            className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none focus:border-slate-950 focus:ring-2 focus:ring-slate-200"
+          />
+
+          <select
+            value={share.permission}
+            onChange={(event) =>
+              setShare((current) => ({
+                ...current,
+                permission: event.target.value,
+              }))
+            }
+            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-950"
+          >
+            <option value="VIEW_ONLY">👁 View Only</option>
+            <option value="EDIT_ACCESS">✏️ Edit Access</option>
+            <option value="FULL_MANAGEMENT">🔥 Full Management</option>
+          </select>
+
+          {share.error && (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+              {share.error}
+            </div>
+          )}
+
+          {share.success && (
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              Credential shared successfully.
+            </div>
+          )}
+        </div>
+
+        <div className="flex gap-3 border-t border-slate-100 bg-slate-50 p-6">
+          <button
+            type="submit"
+            disabled={share.loading}
+            className="flex-1 rounded-lg bg-slate-950 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-60"
+          >
+            {share.loading ? "Sharing..." : "Share Credential"}
+          </button>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 rounded-lg border border-slate-300 bg-white py-3 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default ViewCredentials;
