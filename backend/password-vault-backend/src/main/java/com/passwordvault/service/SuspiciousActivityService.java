@@ -1,7 +1,7 @@
-package com.example.passwordvault.service;
+package com.passwordvault.service;
 
-import com.example.passwordvault.entity.SuspiciousActivity;
-import com.example.passwordvault.repository.SuspiciousActivityRepository;
+import com.passwordvault.entity.SuspiciousActivity;
+import com.passwordvault.repository.SuspiciousActivityRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +22,18 @@ public class SuspiciousActivityService {
             Long userId,
             int failedAttempts) {
 
+        boolean alreadyFlagged =
+                suspiciousActivityRepository
+                        .existsByUserIdAndActivityTypeAndStatus(
+                                userId,
+                                "MULTIPLE_FAILED_LOGINS",
+                                "FLAGGED"
+                        );
+
+        if (alreadyFlagged) {
+            return null;
+        }
+
         SuspiciousActivity activity =
                 new SuspiciousActivity();
 
@@ -32,8 +44,8 @@ public class SuspiciousActivityService {
         );
 
         activity.setDescription(
-                failedAttempts +
-                " failed login attempts detected"
+                failedAttempts
+                        + " failed login attempts detected within 10 minutes"
         );
 
         activity.setDetectedAt(

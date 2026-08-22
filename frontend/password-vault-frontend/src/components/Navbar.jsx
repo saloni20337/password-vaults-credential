@@ -8,7 +8,12 @@ const credentialItems = [
   ["/manage-shared", "Shared Credentials"],
 ];
 
-const securityItems = [["/login-activity", "Login Activity"]];
+const securityItems = [
+  ["/login-activity", "Login Activity"],
+  ["/suspicious-activity", "Suspicious Activity"],
+    ["/security-alerts", "Security Alerts"],
+  ["/audit-logs", "Audit Logs"],
+];
 
 function Navbar() {
   const navigate = useNavigate();

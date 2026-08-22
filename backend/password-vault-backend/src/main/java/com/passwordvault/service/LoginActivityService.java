@@ -35,4 +35,16 @@ public class LoginActivityService {
     return loginActivityRepository
             .countByUsernameAndStatus(username, "FAILED");
 }
+public long getRecentFailedAttempts(String username) {
+
+    LocalDateTime tenMinutesAgo =
+            LocalDateTime.now().minusMinutes(10);
+
+    return loginActivityRepository
+            .countByUsernameAndStatusAndLoginTimeAfter(
+                    username,
+                    "FAILED",
+                    tenMinutesAgo
+            );
+}
 }

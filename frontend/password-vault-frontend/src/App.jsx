@@ -14,6 +14,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import EditCredential from "./pages/EditCredential";
 import ManageSharedCredentials from "./pages/ManageSharedCredentials";
 import LoginActivity from "./pages/LoginActivity";
+import SuspiciousActivity from "./pages/SuspiciousActivity";
+import SecurityAlerts from "./pages/SecurityAlerts";
+import AuditLogs from "./pages/AuditLogs";
 
 
 
@@ -62,6 +65,27 @@ function App() {
     element={
         <ProtectedRoute>
             <LoginActivity />
+        </ProtectedRoute>
+    }
+/>
+<Route
+    path="/suspicious-activity"
+    element={<SuspiciousActivity />}
+/>
+<Route
+    path="/security-alerts"
+    element={
+        <ProtectedRoute>
+            <SecurityAlerts />
+        </ProtectedRoute>
+    }
+/>
+
+<Route
+    path="/audit-logs"
+    element={
+        <ProtectedRoute>
+            <AuditLogs />
         </ProtectedRoute>
     }
 />

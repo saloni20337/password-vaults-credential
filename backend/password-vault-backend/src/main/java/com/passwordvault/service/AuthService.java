@@ -4,8 +4,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.SimpleMailMessage;
 import java.time.LocalDateTime;
 import java.util.Random;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.passwordvault.dto.LoginResponse;
 import com.passwordvault.security.JwtUtil;
 import com.passwordvault.dto.ForgotPasswordRequest;
@@ -13,13 +15,15 @@ import com.passwordvault.dto.LoginRequest;
 import com.passwordvault.dto.RegisterRequest;
 import com.passwordvault.dto.ResetPasswordRequest;
 import com.passwordvault.dto.VerifyOtpRequest;
+
 import com.passwordvault.entity.PasswordResetToken;
 import com.passwordvault.entity.User;
+
 import com.passwordvault.repository.PasswordResetTokenRepo;
 import com.passwordvault.repository.UserRepo;
-import com.passwordvault.service.LoginActivityService;
-import com.passwordvault.service.SuspiciousActivityService;
+
 import org.springframework.transaction.annotation.Transactional;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -33,6 +37,8 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final LoginActivityService loginActivityService;
     private final SuspiciousActivityService suspiciousActivityService;
+    private final SecurityAlertService securityAlertService;
+    private final AuditLogService auditLogService;
   
 
 
@@ -92,7 +98,7 @@ public class AuthService {
                 "FAILED"
         );
          long failedAttempts =
-            loginActivityService.getFailedAttempts(
+            loginActivityService.getRecentFailedAttempts(
                     user.getEmail()
             );
 
@@ -102,6 +108,15 @@ public class AuthService {
                 user.getId(),
                 (int) failedAttempts
         );
+         securityAlertService.createAlert(
+            user.getId(),
+            (int) failedAttempts
+    );
+     auditLogService.createLog(
+            user.getId(),
+            "SECURITY_ALERT_CREATED",
+            "Security alert created for multiple failed login attempts"
+    );
     }
 
         throw new RuntimeException("Invalid Credentials");

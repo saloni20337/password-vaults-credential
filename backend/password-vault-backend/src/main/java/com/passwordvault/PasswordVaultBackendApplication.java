@@ -10,6 +10,7 @@ public class PasswordVaultBackendApplication {
     public static void main(String[] args) {
 
       SpringApplication.run(PasswordVaultBackendApplication.class, args);
+      
     }
 
     

@@ -1,4 +1,4 @@
-package com.example.passwordvault.entity;
+package com.passwordvault.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
