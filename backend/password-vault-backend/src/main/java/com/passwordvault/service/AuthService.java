@@ -17,6 +17,8 @@ import com.passwordvault.entity.PasswordResetToken;
 import com.passwordvault.entity.User;
 import com.passwordvault.repository.PasswordResetTokenRepo;
 import com.passwordvault.repository.UserRepo;
+import com.passwordvault.service.LoginActivityService;
+import com.passwordvault.service.SuspiciousActivityService;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +31,8 @@ public class AuthService {
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder encoder;
     private final JwtUtil jwtUtil;
+    private final LoginActivityService loginActivityService;
+    private final SuspiciousActivityService suspiciousActivityService;
   
 
 
@@ -60,29 +64,66 @@ public class AuthService {
 
 
     // Login User
-    public LoginResponse login(LoginRequest request) {
+  public LoginResponse login(LoginRequest request) {
 
-    User user = userRepo.findByEmail(
-            request.getEmail()
-    ).orElse(null);
+    User user = userRepo.findByEmail(request.getEmail())
+            .orElse(null);
 
-    if(user == null) {
-        throw new RuntimeException("User Not Found");
-    }
+    // USER NOT FOUND
+    if (user == null) {
 
-    if(!encoder.matches(
-            request.getPassword(),
-            user.getPassword()
-    )) {
+        loginActivityService.recordActivity(
+                request.getEmail(),
+                "FAILED"
+        );
+
         throw new RuntimeException("Invalid Credentials");
     }
 
-    String token =
-            jwtUtil.generateToken(user.getEmail());
 
-    return new LoginResponse(token, "Login Successful");
+    // WRONG PASSWORD
+    if (!encoder.matches(
+            request.getPassword(),
+            user.getPassword()
+    )) {
+
+        loginActivityService.recordActivity(
+                user.getEmail(),
+                "FAILED"
+        );
+         long failedAttempts =
+            loginActivityService.getFailedAttempts(
+                    user.getEmail()
+            );
+
+    if (failedAttempts >= 5) {
+
+        suspiciousActivityService.createSuspiciousActivity(
+                user.getId(),
+                (int) failedAttempts
+        );
+    }
+
+        throw new RuntimeException("Invalid Credentials");
+    }
+
+
+    // SUCCESSFUL LOGIN
+    loginActivityService.recordActivity(
+            user.getEmail(),
+            "SUCCESS"
+    );
+
+
+    String token = jwtUtil.generateToken(
+            user.getEmail()
+    );
+
+    return new LoginResponse(
+            token,
+            "Login Successful"
+    );
 }
-
 
 // Forgot Password - Generate OTP and Send Mail
 public String forgotPassword(ForgotPasswordRequest request){

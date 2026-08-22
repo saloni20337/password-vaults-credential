@@ -74,9 +74,7 @@ public class CredentialService {
         );
 
         credential.setDeleted(false);
-
-
-       credential.setUser(user);
+credential.setUser(user);
 
 Credential savedCredential =
         credentialRepository.save(credential);
