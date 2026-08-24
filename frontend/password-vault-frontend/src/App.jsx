@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -115,6 +116,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword/>}/>
 
       </Routes>
+      <Footer />
 
     </BrowserRouter>
 

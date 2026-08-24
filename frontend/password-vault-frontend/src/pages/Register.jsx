@@ -87,14 +87,14 @@ function Register() {
 
   return (
 
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 relative">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 relative">
 
 
       {/* Back Arrow */}
 
       <button
         onClick={()=>navigate(-1)}
-        className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
+        className="absolute top-6 left-6 text-2xl text-slate-700 hover:text-black"
       >
         ←
       </button>
@@ -106,13 +106,13 @@ function Register() {
 
 
 
-        <h1 className="text-4xl font-bold text-gray-900 text-center">
+        <h1 className="text-4xl font-bold text-slate-900 text-center">
           Create Account
         </h1>
 
 
 
-        <p className="mt-3 text-gray-600 text-center">
+        <p className="mt-3 text-slate-600 text-center">
           Register to manage your passwords securely.
         </p>
 
@@ -130,7 +130,7 @@ function Register() {
             placeholder="Full Name"
             value={name}
             onChange={(e)=>setName(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
           />
 
 
@@ -143,7 +143,7 @@ function Register() {
             placeholder="Email Address"
             value={email}
             onChange={(e)=>setEmail(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
           />
 
 
@@ -159,14 +159,14 @@ function Register() {
               placeholder="Password"
               value={password}
               onChange={(e)=>setPassword(e.target.value)}
-              className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full p-3 pr-12 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
 
 
             <button
               type="button"
               onClick={()=>setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 text-gray-600"
+              className="absolute right-3 top-3 text-slate-600"
             >
               👁️
             </button>
@@ -189,14 +189,14 @@ function Register() {
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e)=>setConfirmPassword(e.target.value)}
-              className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full p-3 pr-12 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             />
 
 
             <button
               type="button"
               onClick={()=>setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 text-gray-600"
+              className="absolute right-3 top-3 text-slate-600"
             >
               👁️
             </button>
@@ -213,7 +213,7 @@ function Register() {
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
+            className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-slate-800"
           >
             Create Account
           </button>
@@ -223,7 +223,7 @@ function Register() {
 
           {/* Login Redirect */}
 
-          <p className="text-center text-gray-600 mt-5">
+          <p className="text-center text-slate-600 mt-5">
 
             Already have an account?{" "}
 
@@ -265,14 +265,14 @@ function Register() {
 
 
 
-                <h2 className="text-2xl font-bold text-gray-900 mt-4">
+                <h2 className="text-2xl font-bold text-slate-900 mt-4">
                   Account Created
                 </h2>
 
 
 
 
-                <p className="text-gray-600 mt-2">
+                <p className="text-slate-600 mt-2">
                   Your Password Vault account is ready.
                 </p>
 
@@ -288,7 +288,7 @@ function Register() {
 
                   }}
 
-                  className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
+                  className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-slate-800"
 
                 >
                   Continue

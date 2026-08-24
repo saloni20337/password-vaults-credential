@@ -105,7 +105,7 @@ function ManageSharedCredentials() {
 
         {!loading && shares.length === 0 && (
 
-          <div className="text-center py-10 text-gray-500">
+          <div className="text-center py-10 text-slate-500">
 
             You haven't shared any credentials yet.
 
@@ -132,7 +132,7 @@ function ManageSharedCredentials() {
               </h2>
 
 
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-slate-500 mb-4">
 
                 Shared with:
 

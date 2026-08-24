@@ -327,7 +327,7 @@ setResendMsg("Failed to resend OTP");
 return(
 
 
-<div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 relative">
+<div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 relative">
 
 
 
@@ -337,7 +337,7 @@ return(
 
 onClick={()=>navigate(-1)}
 
-className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
+className="absolute top-6 left-6 text-2xl text-slate-700 hover:text-black"
 
 >
 
@@ -358,7 +358,7 @@ className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
 
 
 
-<h1 className="text-4xl font-bold text-gray-900 text-center">
+<h1 className="text-4xl font-bold text-slate-900 text-center">
 
 Verify OTP
 
@@ -370,7 +370,7 @@ Verify OTP
 
 
 
-<p className="mt-3 text-gray-600 text-center">
+<p className="mt-3 text-slate-600 text-center">
 
 OTP sent to {maskEmail(email)}
 
@@ -382,7 +382,7 @@ OTP sent to {maskEmail(email)}
 
 
 
-<p className="text-center text-sm text-gray-500 mt-2">
+<p className="text-center text-sm text-slate-500 mt-2">
 
 OTP expires in{" "}
 
@@ -449,7 +449,7 @@ onChange={(e)=>handleOtpChange(e.target.value,index)}
 onKeyDown={(e)=>handleKeyDown(e,index)}
 
 
-className="w-12 h-12 text-center text-xl font-semibold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+className="w-12 h-12 text-center text-xl font-semibold border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
 
 
 />
@@ -490,7 +490,7 @@ error && (
 
 
 
-<p className="text-center text-sm text-gray-600">
+<p className="text-center text-sm text-slate-600">
 
 
 Didn't get the OTP?{" "}
@@ -509,7 +509,7 @@ onClick={resendOtp}
 className={`font-medium hover:underline ${
 resendTimer>0
 ?
-"text-gray-400 cursor-not-allowed"
+"text-slate-400 cursor-not-allowed"
 :
 "text-blue-600"
 }`}
@@ -572,7 +572,7 @@ resendMsg && (
 disabled={loading}
 
 
-className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50"
+className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-slate-800 disabled:opacity-50"
 
 
 >
@@ -650,7 +650,7 @@ showPopup && (
 
 
 
-<h2 className="text-2xl font-bold text-gray-900 mt-4">
+<h2 className="text-2xl font-bold text-slate-900 mt-4">
 
 OTP Verified
 
@@ -663,7 +663,7 @@ OTP Verified
 
 
 
-<p className="text-gray-600 mt-2">
+<p className="text-slate-600 mt-2">
 
 Create your new password.
 
@@ -682,7 +682,7 @@ Create your new password.
 onClick={()=>navigate("/reset-password",{state:{email}})}
 
 
-className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
+className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-slate-800"
 
 
 >

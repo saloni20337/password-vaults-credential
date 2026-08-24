@@ -47,4 +47,5 @@ public long getRecentFailedAttempts(String username) {
                     tenMinutesAgo
             );
 }
+
 }

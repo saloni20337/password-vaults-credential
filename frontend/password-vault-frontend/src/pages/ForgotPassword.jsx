@@ -76,7 +76,7 @@ error.response?.data?.message ||
 return(
 
 
-<div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 relative">
+<div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 relative">
 
 
 
@@ -89,7 +89,7 @@ return(
 
 onClick={()=>navigate(-1)}
 
-className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
+className="absolute top-6 left-6 text-2xl text-slate-700 hover:text-black"
 
 >
 
@@ -110,7 +110,7 @@ className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
 
 
 
-<h1 className="text-4xl font-bold text-gray-900 text-center">
+<h1 className="text-4xl font-bold text-slate-900 text-center">
 
 Forgot Password
 
@@ -120,7 +120,7 @@ Forgot Password
 
 
 
-<p className="mt-3 text-gray-600 text-center">
+<p className="mt-3 text-slate-600 text-center">
 
 Enter your registered email to receive OTP.
 
@@ -160,7 +160,7 @@ value={email}
 onChange={(e)=>setEmail(e.target.value)}
 
 
-className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
 
 
 />
@@ -175,7 +175,7 @@ className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus
 
 type="submit"
 
-className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
+className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-slate-800"
 
 >
 
@@ -240,7 +240,7 @@ error && (
 {/* Login Link */}
 
 
-<p className="text-center text-gray-600 mt-6">
+<p className="text-center text-slate-600 mt-6">
 
 
 Remember your password?{" "}
@@ -270,7 +270,7 @@ Login
 {/* Register Link */}
 
 
-<p className="text-center text-gray-600 mt-3">
+<p className="text-center text-slate-600 mt-3">
 
 
 Don't have an account?{" "}

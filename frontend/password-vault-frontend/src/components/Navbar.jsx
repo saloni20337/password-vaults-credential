@@ -194,12 +194,12 @@ function Navbar() {
       </nav>
 
       {showLogoutPopup && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 backdrop-blur-sm"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="logout-title"
-        >
+       <div
+  className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 backdrop-blur-[2px]"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="logout-title"
+>
           <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
             <div className="p-6">
               <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-lg text-red-600">

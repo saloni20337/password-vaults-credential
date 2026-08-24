@@ -164,7 +164,7 @@ setLoading(false);
 return(
 
 
-<div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 relative">
+<div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 relative">
 
 
 
@@ -174,7 +174,7 @@ return(
 
 onClick={()=>navigate(-1)}
 
-className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
+className="absolute top-6 left-6 text-2xl text-slate-700 hover:text-black"
 
 >
 
@@ -196,7 +196,7 @@ className="absolute top-6 left-6 text-2xl text-gray-700 hover:text-black"
 
 
 
-<h1 className="text-4xl font-bold text-gray-900 text-center">
+<h1 className="text-4xl font-bold text-slate-900 text-center">
 
 Reset Password
 
@@ -208,7 +208,7 @@ Reset Password
 
 
 
-<p className="mt-3 text-gray-600 text-center">
+<p className="mt-3 text-slate-600 text-center">
 
 Create a strong new password.
 
@@ -250,7 +250,7 @@ value={password}
 
 onChange={(e)=>setPassword(e.target.value)}
 
-className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+className="w-full p-3 pr-12 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
 
 />
 
@@ -286,7 +286,7 @@ className="absolute right-3 top-3"
 
 password && (
 
-<p className="text-sm text-gray-600">
+<p className="text-sm text-slate-600">
 
 Password Strength:
 
@@ -327,7 +327,7 @@ value={confirmPassword}
 
 onChange={(e)=>setConfirmPassword(e.target.value)}
 
-className="w-full p-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+className="w-full p-3 pr-12 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
 
 />
 
@@ -383,7 +383,7 @@ error && (
 
 disabled={loading}
 
-className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50"
+className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-slate-800 disabled:opacity-50"
 
 >
 
@@ -460,7 +460,7 @@ showPopup && (
 
 
 
-<h2 className="text-2xl font-bold text-gray-900 mt-4">
+<h2 className="text-2xl font-bold text-slate-900 mt-4">
 
 Password Reset
 
@@ -473,7 +473,7 @@ Password Reset
 
 
 
-<p className="text-gray-600 mt-2">
+<p className="text-slate-600 mt-2">
 
 Your password has been updated successfully.
 
@@ -492,7 +492,7 @@ Your password has been updated successfully.
 onClick={()=>navigate("/login")}
 
 
-className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800"
+className="mt-6 w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-slate-800"
 
 
 >

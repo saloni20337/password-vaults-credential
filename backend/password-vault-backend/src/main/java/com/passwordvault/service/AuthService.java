@@ -128,7 +128,11 @@ public class AuthService {
             user.getEmail(),
             "SUCCESS"
     );
-
+   auditLogService.createLog(
+        user.getId(),
+        "LOGIN",
+        "User logged in successfully"
+);
 
     String token = jwtUtil.generateToken(
             user.getEmail()

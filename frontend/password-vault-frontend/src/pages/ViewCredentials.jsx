@@ -342,7 +342,7 @@ function CredentialCard({
         </div>
 
         {item.favourite && (
-          <Heart size={17} fill="currentColor" className="shrink-0 text-rose-500" />
+          <Heart size={17} fill="currentColor" className="shrink-0 text-red-500" />
         )}
       </div>
 

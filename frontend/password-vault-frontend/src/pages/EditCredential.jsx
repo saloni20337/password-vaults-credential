@@ -84,20 +84,20 @@ function EditCredential() {
         {/* Back Button — outside the card */}
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-500 hover:text-black transition-colors mb-4 text-sm font-medium"
+          className="flex items-center gap-2 text-slate-500 hover:text-black transition-colors mb-4 text-sm font-medium"
         >
           <span className="text-lg leading-none">←</span>
           <span>Back</span>
         </button>
 
         {/* Card */}
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+        <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-8">
 
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900">
+            <h2 className="text-2xl font-semibold text-slate-900">
               Update Credential
             </h2>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-slate-500 mt-1">
               Edit the details below and save your changes.
             </p>
           </div>
@@ -105,7 +105,7 @@ function EditCredential() {
           <form onSubmit={handleSubmit} className="space-y-5">
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                 Website Name
               </label>
               <input
@@ -114,12 +114,12 @@ function EditCredential() {
                 placeholder="e.g. Netflix"
                 value={formData.websiteName}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/80 focus:border-transparent transition"
+                className="w-full border border-slate-300 p-3 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-black/80 focus:border-transparent transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                 Username / Email
               </label>
               <input
@@ -128,12 +128,12 @@ function EditCredential() {
                 placeholder="e.g. name@example.com"
                 value={formData.username}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/80 focus:border-transparent transition"
+                className="w-full border border-slate-300 p-3 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-black/80 focus:border-transparent transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                 Password
               </label>
               <div className="relative">
@@ -143,12 +143,12 @@ function EditCredential() {
                   placeholder="Enter password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full border border-gray-300 p-3 pr-12 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/80 focus:border-transparent transition"
+                  className="w-full border border-slate-300 p-3 pr-12 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-black/80 focus:border-transparent transition"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
                 >
                   {showPassword ? "🙈" : "👁"}
                 </button>
@@ -156,7 +156,7 @@ function EditCredential() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 uppercase tracking-wide mb-1.5">
+              <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-1.5">
                 Category
               </label>
               <input
@@ -165,7 +165,7 @@ function EditCredential() {
                 placeholder="e.g. Entertainment, Work, Social"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full border border-gray-300 p-3 rounded-lg text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black/80 focus:border-transparent transition"
+                className="w-full border border-slate-300 p-3 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-black/80 focus:border-transparent transition"
               />
             </div>
 
@@ -182,14 +182,14 @@ function EditCredential() {
                 }
                 className="w-4 h-4 accent-black rounded"
               />
-              <span className="text-sm text-gray-700">Mark as favourite</span>
+              <span className="text-sm text-slate-700">Mark as favourite</span>
             </label>
 
-            <div className="pt-3 border-t border-gray-100">
+            <div className="pt-3 border-t border-slate-100">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-black text-white font-medium px-5 py-3 rounded-lg hover:bg-gray-800 active:scale-[0.99] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-black text-white font-medium px-5 py-3 rounded-lg hover:bg-slate-800 active:scale-[0.99] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Updating..." : "Update Credential"}
               </button>
@@ -207,25 +207,25 @@ function EditCredential() {
 
             <div className="text-4xl mb-3">✅</div>
 
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">
               Credential Updated
             </h3>
 
-            <p className="text-gray-500 text-sm mb-6">
+            <p className="text-slate-500 text-sm mb-6">
               Your changes have been saved successfully.
             </p>
 
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => navigate("/credentials")}
-                className="bg-black text-white px-4 py-2.5 rounded-lg font-medium hover:bg-gray-800 transition"
+                className="bg-black text-white px-4 py-2.5 rounded-lg font-medium hover:bg-slate-800 transition"
               >
                 Go to Credentials
               </button>
 
               <button
                 onClick={() => setShowSuccessModal(false)}
-                className="text-gray-500 text-sm hover:text-black transition py-1"
+                className="text-slate-500 text-sm hover:text-black transition py-1"
               >
                 Stay Here
               </button>

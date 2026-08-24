@@ -164,8 +164,8 @@ function AddCredential() {
   const strengthStyles = {
     weak: {
       label: "Weak password",
-      color: "bg-rose-500",
-      text: "text-rose-600",
+      color: "bg-red-500",
+      text: "text-red-600",
       width: "33%",
     },
     medium: {
@@ -189,45 +189,41 @@ function AddCredential() {
       <Navbar />
 
       <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:py-10">
-        <button
-          onClick={() => navigate(-1)}
-          className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition hover:text-slate-950"
-        >
-          <ArrowLeft size={18} />
-          Back to Vault
-        </button>
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 transition hover:text-slate-950"
+          >
+            <ArrowLeft size={18} />
+            Back to Vault
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate("/credentials")}
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 transition hover:text-slate-950"
+          >
+            <Eye size={16} />
+            View Credentials
+          </button>
+        </div>
 
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-100 bg-gradient-to-r from-slate-950 to-slate-800 px-6 py-7 text-white sm:px-8">
-            <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/10">
-                  <KeyRound size={24} />
-                </div>
+          <div className="flex items-center gap-4 border-b border-slate-100 px-6 py-6 sm:px-8">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white">
+              <KeyRound size={24} />
+            </div>
 
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                    Secure vault
-                  </p>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                Secure vault
+              </p>
 
-                  <h1 className="mt-1 text-2xl font-bold">
-                    Add Credential
-                  </h1>
+              <h1 className="mt-1 text-2xl font-bold text-slate-950">Add Credential</h1>
 
-                  <p className="mt-1 text-sm text-slate-300">
-                    Save your account securely in the vault.
-                  </p>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => navigate("/credentials")}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-white/20"
-              >
-                <Eye size={17} />
-                View Credentials
-              </button>
+              <p className="mt-1 text-sm text-slate-500">
+                Save your account securely in the vault.
+              </p>
             </div>
           </div>
 
@@ -249,7 +245,7 @@ function AddCredential() {
             )}
 
             {error && (
-              <div className="mb-6 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+              <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
                 {error}
               </div>
             )}
@@ -280,7 +276,7 @@ function AddCredential() {
               <div>
                 <div className="mb-2 flex items-center justify-between gap-3">
                   <label className="text-sm font-semibold text-slate-700">
-                    Password<span className="ml-1 text-rose-500">*</span>
+                    Password<span className="ml-1 text-red-500">*</span>
                   </label>
 
                   <button
@@ -399,7 +395,7 @@ function Field({ label, required, children }) {
     <div>
       <label className="mb-2 block text-sm font-semibold text-slate-700">
         {label}
-        {required && <span className="ml-1 text-rose-500">*</span>}
+        {required && <span className="ml-1 text-red-500">*</span>}
       </label>
 
       {children}

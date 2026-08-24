@@ -16,4 +16,5 @@ public interface LoginActivityRepository
         String status,
         LocalDateTime after
 );
-}
+
+        }

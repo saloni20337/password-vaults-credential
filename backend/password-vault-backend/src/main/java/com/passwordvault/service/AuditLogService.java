@@ -4,8 +4,9 @@ import com.passwordvault.entity.AuditLog;
 import com.passwordvault.repository.AuditLogRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.time.LocalDateTime;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,4 +28,8 @@ public class AuditLogService {
 
         return auditLogRepository.save(log);
     }
+    public List<AuditLog> getUserLogs(Long userId) {
+    return auditLogRepository
+            .findByUserIdOrderByTimestampDesc(userId);
+}
 }

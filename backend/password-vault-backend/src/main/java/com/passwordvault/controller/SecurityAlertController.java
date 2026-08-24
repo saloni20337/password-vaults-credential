@@ -1,9 +1,9 @@
 package com.passwordvault.controller;
 
-import com.passwordvault.entity.SuspiciousActivity;
+import com.passwordvault.entity.SecurityAlert;
 import com.passwordvault.entity.User;
 import com.passwordvault.repository.UserRepo;
-import com.passwordvault.service.SuspiciousActivityService;
+import com.passwordvault.service.SecurityAlertService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,13 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityAlertController {
 
-    private final SuspiciousActivityService
-            suspiciousActivityService;
+    private final SecurityAlertService securityAlertService;
 
     private final UserRepo userRepo;
 
     @GetMapping
-    public List<SuspiciousActivity> getSecurityAlerts(
+    public List<SecurityAlert> getSecurityAlerts(
             Authentication authentication) {
 
         User user = userRepo.findByEmail(
@@ -32,7 +31,7 @@ public class SecurityAlertController {
                 () -> new RuntimeException("User not found")
         );
 
-        return suspiciousActivityService
-                .getUserActivities(user.getId());
+        return securityAlertService
+                .getUserAlerts(user.getId());
     }
 }

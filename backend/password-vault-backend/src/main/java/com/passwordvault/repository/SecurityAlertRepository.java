@@ -1,4 +1,3 @@
-
 package com.passwordvault.repository;
 
 import com.passwordvault.entity.SecurityAlert;
@@ -10,4 +9,5 @@ public interface SecurityAlertRepository
         extends JpaRepository<SecurityAlert, Long> {
 
     List<SecurityAlert> findByUserIdOrderByCreatedAtDesc(Long userId);
+
 }
