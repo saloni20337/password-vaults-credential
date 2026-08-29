@@ -22,8 +22,6 @@ import com.passwordvault.entity.User;
 import com.passwordvault.repository.PasswordResetTokenRepo;
 import com.passwordvault.repository.UserRepo;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import lombok.RequiredArgsConstructor;
 
 @Service

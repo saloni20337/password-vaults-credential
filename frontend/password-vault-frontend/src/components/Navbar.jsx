@@ -52,6 +52,12 @@ function Navbar() {
   const toggleMenu = (menu) => {
     setOpenMenu((current) => (current === menu ? null : menu));
   };
+  const securityItems = [
+  ["/login-activity", "Login Activity"],
+  ["/suspicious-activity", "Suspicious Activity"],
+  ["/security-alerts", "Security Alerts"],
+  ["/audit-logs", "Audit Logs"],
+];
 
   const logout = () => {
     localStorage.removeItem("token");

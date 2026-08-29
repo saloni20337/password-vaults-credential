@@ -22,18 +22,6 @@ public class SuspiciousActivityService {
             Long userId,
             int failedAttempts) {
 
-        boolean alreadyFlagged =
-                suspiciousActivityRepository
-                        .existsByUserIdAndActivityTypeAndStatus(
-                                userId,
-                                "MULTIPLE_FAILED_LOGINS",
-                                "FLAGGED"
-                        );
-
-        if (alreadyFlagged) {
-            return null;
-        }
-
         SuspiciousActivity activity =
                 new SuspiciousActivity();
 

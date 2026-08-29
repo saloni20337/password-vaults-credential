@@ -17,4 +17,5 @@ public interface LoginActivityRepository
         LocalDateTime after
 );
 
+long countByStatus(String status);
         }

@@ -18,6 +18,7 @@ import LoginActivity from "./pages/LoginActivity";
 import SuspiciousActivity from "./pages/SuspiciousActivity";
 import SecurityAlerts from "./pages/SecurityAlerts";
 import AuditLogs from "./pages/AuditLogs";
+import SecurityAnalytics from "./pages/SecurityAnalytics";
 
 
 
@@ -53,6 +54,10 @@ function App() {
            <ViewCredentials/>
            </ProtectedRoute>
 }/>
+<Route
+  path="/security-analytics"
+  element={<SecurityAnalytics />}
+/>
 <Route
   path="/profile"
   element={
