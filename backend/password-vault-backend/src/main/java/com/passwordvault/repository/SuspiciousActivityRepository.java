@@ -17,4 +17,6 @@ public interface SuspiciousActivityRepository
             String activityType,
             String status
     );
+
+    List<SuspiciousActivity> findTop5ByOrderByDetectedAtDesc();
 }

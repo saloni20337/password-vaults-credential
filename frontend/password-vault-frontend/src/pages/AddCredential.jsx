@@ -136,7 +136,10 @@ function AddCredential() {
     try {
       setLoading(true);
 
-      await api.post("/credentials/add", formData);
+      await api.post("/credentials/add", {
+  ...formData,
+  passwordStrength: strength,
+});
 
       setSuccess(true);
       setFormData({

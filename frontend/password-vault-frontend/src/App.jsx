@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
+import Reports from "./pages/Reports";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyOtp from "./pages/VerifyOtp";
 import ResetPassword from "./pages/ResetPassword";
@@ -19,7 +20,6 @@ import SuspiciousActivity from "./pages/SuspiciousActivity";
 import SecurityAlerts from "./pages/SecurityAlerts";
 import AuditLogs from "./pages/AuditLogs";
 import SecurityAnalytics from "./pages/SecurityAnalytics";
-
 
 
 function App() {
@@ -43,7 +43,10 @@ function App() {
         <Dashboard/>
         </ProtectedRoute>
          }/>
-          
+          <Route
+  path="/security-analytics"
+  element={<SecurityAnalytics />}
+/>
           <Route path="/add-credential" element={
           <ProtectedRoute>
           <AddCredential/>
@@ -54,9 +57,17 @@ function App() {
            <ViewCredentials/>
            </ProtectedRoute>
 }/>
-<Route
+{/* <Route
   path="/security-analytics"
   element={<SecurityAnalytics />}
+/> */}
+<Route
+  path="/reports"
+  element={
+    <ProtectedRoute>
+      <Reports />
+    </ProtectedRoute>
+  }
 />
 <Route
   path="/profile"

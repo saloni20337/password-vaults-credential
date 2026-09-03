@@ -9,4 +9,7 @@ public interface AuditLogRepository
         extends JpaRepository<AuditLog, Long> {
 
     List<AuditLog> findByUserIdOrderByTimestampDesc(Long userId);
-}
+
+    List<AuditLog> findTop5ByOrderByTimestampDesc();
+
+        }

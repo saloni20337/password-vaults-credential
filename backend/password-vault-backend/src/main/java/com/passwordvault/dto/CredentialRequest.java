@@ -11,6 +11,7 @@ public class CredentialRequest {
     private String websiteName;
     private String username;
     private String password;
+    private String passwordStrength;
     private String category;
     private Boolean favourite;
 

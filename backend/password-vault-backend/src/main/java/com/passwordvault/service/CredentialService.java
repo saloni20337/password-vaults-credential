@@ -1,28 +1,29 @@
 package com.passwordvault.service;
 
-import com.passwordvault.dto.CredentialRequest;
-import com.passwordvault.dto.CredentialResponse;
-import com.passwordvault.entity.Credential;
-import com.passwordvault.entity.SharedCredential;
-import com.passwordvault.entity.User;
-import com.passwordvault.repository.CredentialRepository;
-import com.passwordvault.repository.SharedCredentialRepository;
-import com.passwordvault.repository.UserRepo;
-import com.passwordvault.entity.FavouriteCredential;
-import com.passwordvault.repository.FavouriteCredRepo;
-import com.passwordvault.security.EncryptionUtil;
-
-import lombok.RequiredArgsConstructor;
-
-import org.springframework.stereotype.Service;
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+import com.passwordvault.dto.CredentialRequest;
+import com.passwordvault.dto.CredentialResponse;
+import com.passwordvault.entity.Credential;
+import com.passwordvault.entity.FavouriteCredential;
+import com.passwordvault.entity.SharedCredential;
+import com.passwordvault.entity.User;
+import com.passwordvault.repository.CredentialRepository;
+import com.passwordvault.repository.FavouriteCredRepo;
+import com.passwordvault.repository.SharedCredentialRepository;
+import com.passwordvault.repository.UserRepo;
+import com.passwordvault.security.EncryptionUtil;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CredentialService {
 
     private final CredentialRepository credentialRepository;
@@ -68,6 +69,9 @@ public class CredentialService {
                         request.getPassword()
                 )
         );
+        credential.setPasswordStrength(
+        request.getPasswordStrength()
+);
 
         credential.setCategory(
                 request.getCategory()
@@ -282,7 +286,7 @@ return savedCredential;
         );
     }
     // UPDATE CREDENTIAL
-    public Credential updateCredential(
+    public String updateCredential(
             Long id,
             CredentialRequest request,
             String email
@@ -391,70 +395,61 @@ return savedCredential;
 }
 
 
-        return credentialRepository.save(
-                credential
-        );
+       credentialRepository.save(credential);
+
+return "Credential updated successfully";
+
     }
     // DELETE CREDENTIAL
-    public String deleteCredential(
-            Long id,
-            String email
-    ) {
+public String deleteCredential(Long id, String email) {
 
-        User user =
-                userRepo.findByEmail(email)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "User Not Found"
-                                )
-                        );
-
-
-        // Owner
-        var ownCredential =
-                credentialRepository
-                        .findByIdAndUser(id, user);
-
-
-        if (ownCredential.isPresent()) {
-
-            credentialRepository.delete(
-                    ownCredential.get()
+    User user = userRepo.findByEmail(email)
+            .orElseThrow(() ->
+                    new RuntimeException("User Not Found")
             );
 
-            return "Credential Deleted Successfully";
-        }
+    // Owner: poora credential delete karega
+    Optional<Credential> ownCredential =
+            credentialRepository.findById(id);
 
+    if (ownCredential.isPresent()
+            && ownCredential.get().getUser().getId().equals(user.getId())) {
 
-        // Shared
-        SharedCredential shared =
-                sharedCredentialRepository
-                        .findByCredentialIdAndSharedWithUserId(
-                                id,
-                                user.getId()
-                        )
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Credential Not Found"
-                                )
-                        );
-
-
-        if (!shared.isCanDelete()) {
-
-            throw new RuntimeException(
-                    "You do not have delete permission"
-            );
-        }
-
-
-        credentialRepository.delete(
-                shared.getCredential()
+        favouriteCredentialRepository.deleteByCredentialIdAndUserId(
+                id,
+                user.getId()
         );
 
+        // Owner ke sharing records delete karo
+        sharedCredentialRepository.deleteByCredentialId(id);
+
+        credentialRepository.delete(ownCredential.get());
 
         return "Credential Deleted Successfully";
     }
+
+    // Shared user: sirf apna access remove karega
+    SharedCredential shared =
+            sharedCredentialRepository
+                    .findByCredentialIdAndSharedWithUserId(
+                            id,
+                            user.getId()
+                    )
+                    .orElseThrow(() ->
+                            new RuntimeException("Credential Not Found")
+                    );
+
+    if (!shared.isCanDelete()) {
+        throw new RuntimeException(
+                "You do not have delete permission"
+        );
+    }
+
+    // Sirf current user ka shared access remove
+    sharedCredentialRepository.delete(shared);
+
+    return "Shared credential removed successfully";
+}
     // CONVERT ENTITY TO RESPONSE
     private CredentialResponse convertToResponse(
         Credential credential,

@@ -74,13 +74,22 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**"
-                        ).permitAll()
-                          .requestMatchers(
-                "/api/user/**"
-        ).authenticated()
-                        .anyRequest().authenticated()
+
+                        // Login and registration APIs
+                        .requestMatchers("/api/auth/**")
+                        .permitAll()
+
+                        // User APIs
+                        .requestMatchers("/api/user/**")
+                        .authenticated()
+
+                        // Security Analytics APIs
+                        .requestMatchers("/api/security/**")
+                        .authenticated()
+
+                        // All other APIs
+                        .anyRequest()
+                        .authenticated()
                 )
 
                 .addFilterBefore(

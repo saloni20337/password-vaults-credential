@@ -460,10 +460,11 @@ const statItems = [
     </div>
 
   <Link
-  to="/login-activity"
+
+  to="/security-analytics"
   className="flex items-center gap-1 text-xs font-medium text-cyan-300 hover:text-cyan-200"
 >
-  View Login Activity
+  View Security Analytics
   <ArrowUpRight className="size-3.5" />
 </Link>
 
@@ -517,6 +518,61 @@ const statItems = [
     />
 
   </div>
+  {analytics?.recentActivities?.length > 0 && (
+  <section className="border-t border-white/[0.07] p-5 sm:p-6">
+
+    <div className="mb-4 flex items-center justify-between">
+
+      <div>
+        <h3 className="text-sm font-semibold text-zinc-100">
+          Recent Security Activity
+        </h3>
+
+        <p className="mt-1 text-xs text-zinc-600">
+          Latest activities recorded in your security audit logs.
+        </p>
+      </div>
+
+      <Link
+        to="/audit-logs"
+        className="text-xs font-medium text-cyan-300 hover:text-cyan-200"
+      >
+        View all
+      </Link>
+
+    </div>
+
+    <div className="space-y-2">
+
+      {analytics.recentActivities.map((activity) => (
+        <div
+          key={activity.id}
+          className="flex items-center justify-between border border-white/[0.07] p-3"
+        >
+
+          <div>
+            <p className="text-sm text-zinc-200">
+              {activity.action}
+            </p>
+
+            <p className="mt-1 text-xs text-zinc-600">
+              {activity.description}
+            </p>
+          </div>
+
+          <span className="text-[10px] text-zinc-600">
+            {activity.timestamp
+              ? new Date(activity.timestamp).toLocaleString()
+              : ""}
+          </span>
+
+        </div>
+      ))}
+
+    </div>
+
+  </section>
+)}
 
 </section>
 

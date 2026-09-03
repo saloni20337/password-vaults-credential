@@ -22,10 +22,11 @@ public class Credential {
     private String username;
 
     private String password;
+    private String passwordStrength;
 
     private String category;
 
-    // private boolean favourite;
+ private boolean favourite=false;
 
     private boolean deleted;
 

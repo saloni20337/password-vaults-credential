@@ -29,5 +29,6 @@ public interface SharedCredentialRepository
             Long id,
             User user
     );
+    void deleteByCredentialId(Long credentialId);
  
         }

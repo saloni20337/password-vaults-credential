@@ -87,7 +87,7 @@ public class CredentialController {
     }
     // UPDATE
     @PutMapping("/{id}")
-    public Credential updateCredential(
+    public String updateCredential(
             @PathVariable Long id,
             @RequestBody CredentialRequest request,
             Authentication authentication

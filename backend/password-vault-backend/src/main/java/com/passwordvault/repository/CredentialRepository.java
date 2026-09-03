@@ -12,5 +12,6 @@ public interface CredentialRepository
                   Long id,
                   User user
                 );
+                long countByPasswordStrength(String passwordStrength);
                
 }

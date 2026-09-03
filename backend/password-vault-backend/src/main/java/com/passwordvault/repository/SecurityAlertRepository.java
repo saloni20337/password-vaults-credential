@@ -10,4 +10,5 @@ public interface SecurityAlertRepository
 
     List<SecurityAlert> findByUserIdOrderByCreatedAtDesc(Long userId);
 
+    List<SecurityAlert> findTop5ByOrderByCreatedAtDesc();
 }

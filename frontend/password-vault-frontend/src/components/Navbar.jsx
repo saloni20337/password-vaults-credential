@@ -96,11 +96,14 @@ function Navbar() {
             </div>
           </Link>
 
+
           <div className="hidden items-center gap-1 md:flex">
             <NavLink to="/dashboard" onClick={closeAll}>
               Dashboard
             </NavLink>
-
+<NavLink to="/reports" onClick={closeAll}>
+  Reports
+</NavLink>
             <Dropdown
               label="Credentials"
               open={openMenu === "credentials"}
