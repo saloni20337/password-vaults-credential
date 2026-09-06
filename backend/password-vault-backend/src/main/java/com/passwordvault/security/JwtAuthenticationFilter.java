@@ -18,15 +18,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
-
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-
     private final JwtUtil jwtUtil;
     private final UserRepo userRepo;
-
 
     @Override
     protected void doFilterInternal(
@@ -35,59 +32,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-
         String authHeader = request.getHeader("Authorization");
-        
 
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
-
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
-        System.out.println("Auth Header: " + authHeader);
 
         String token = authHeader.substring(7);
-        System.out.println("Token: " + token);
 
+        if (!jwtUtil.validateToken(token)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String email = jwtUtil.extractEmail(token);
-        System.out.println("email"+email);
 
-        if(email != null &&
-           SecurityContextHolder.getContext().getAuthentication() == null) {
-
+        if (email != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null) {
 
             User user = userRepo.findByEmail(email)
                     .orElse(null);
 
-
-            if(user != null && jwtUtil.validateToken(token)) {
+            if (user != null) {
 
                 UsernamePasswordAuthenticationToken authentication =
-                 new UsernamePasswordAuthenticationToken(
-                    user.getEmail(),
-                    null,
-                    Collections.emptyList()
-            );
-
-
-
-
+                        new UsernamePasswordAuthenticationToken(
+                                user.getEmail(),
+                                null,
+                                Collections.emptyList()
+                        );
 
                 authentication.setDetails(
                         new WebAuthenticationDetailsSource()
-                        .buildDetails(request)
+                                .buildDetails(request)
                 );
-
 
                 SecurityContextHolder.getContext()
                         .setAuthentication(authentication);
             }
-
         }
 
-
         filterChain.doFilter(request, response);
-
     }
 }

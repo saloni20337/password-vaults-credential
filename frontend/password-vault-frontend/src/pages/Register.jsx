@@ -11,76 +11,73 @@ function Register() {
   const [confirmPassword,setConfirmPassword] = useState("");
   const [showPassword,setShowPassword] = useState(false);
   const [showPopup,setShowPopup] = useState(false);
+  const [error, setError] = useState("");
+const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
 
+const handleRegister = async (e) => {
+  e.preventDefault();
+  setError("");
 
-  const handleRegister = async(e)=>{
+  if (!name.trim() || !email.trim() || !password || !confirmPassword) {
+    setError("Please fill all fields.");
+    return;
+  }
 
-    e.preventDefault();
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    setError("Please enter a valid email address.");
+    return;
+  }
 
+  if (password.length < 6) {
+    setError("Password must be at least 6 characters.");
+    return;
+  }
 
-    // Password Match Check
-    if(password !== confirmPassword){
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
 
-      alert("Passwords do not match");
-      return;
+  try {
+    setLoading(true);
 
+    const response = await axios.post(
+      "http://localhost:8080/api/auth/register",
+      {
+        name,
+        email,
+        password
+      }
+    );
+
+    if (response.data === "User Registered Successfully") {
+      setShowPopup(true);
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    } else {
+      setError(response.data);
     }
+  } catch (error) {
+    console.log(error);
 
-
-
-    try{
-
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/register",
-        {
-          name,
-          email,
-          password
-        }
+    if (error.response) {
+      setError(
+        typeof error.response.data === "string"
+          ? error.response.data
+          : "Registration failed. Please try again."
       );
-
-
-
-      if(response.data === "User Registered Successfully"){
-
-        setShowPopup(true);
-
-        setName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-
-      }
-      else{
-
-        alert(response.data);
-
-      }
-
-
+    } else {
+      setError("Backend not connected. Please try again later.");
     }
-    catch(error){
-
-      console.log(error);
-
-
-      if(error.response){
-
-        alert(error.response.data);
-
-      }
-      else{
-
-        alert("Backend not connected");
-
-      }
-
-    }
-
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
 
 
@@ -121,7 +118,14 @@ function Register() {
 
         <form onSubmit={handleRegister} className="mt-8 space-y-4">
 
-
+{error && (
+  <div
+    role="alert"
+    className="rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700"
+  >
+    {error}
+  </div>
+)}
 
           {/* Name Field */}
 
@@ -210,14 +214,15 @@ function Register() {
 
 
           {/* Create Account Button */}
-
           <button
-            type="submit"
-            className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-slate-800"
-          >
-            Create Account
-          </button>
+  type="submit"
+  disabled={loading}
+  className="w-full rounded-lg bg-black py-3 font-medium text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60"
+>
+  {loading ? "Creating Account..." : "Create Account"}
+</button>
 
+          
 
 
 

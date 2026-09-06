@@ -33,3 +33,6 @@ build/
 .vscode/
 
 node_modules/
+
+JWT_SECRET=${JWT_SECRET}
+JWT_EXPIRATION=${JWT_EXPIRATION}

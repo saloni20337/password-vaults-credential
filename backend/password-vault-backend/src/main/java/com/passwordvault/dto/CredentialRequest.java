@@ -1,19 +1,27 @@
 package com.passwordvault.dto;
-import lombok.AllArgsConstructor;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class CredentialRequest {
 
+    @NotBlank(message = "Website name is required")
     private String websiteName;
-    private String username;
-    private String password;
-    private String passwordStrength;
-    private String category;
-    private Boolean favourite;
 
-    // Getters and Setters
+    @NotBlank(message = "Username is required")
+    private String username;
+
+    @NotBlank(message = "Password is required")
+    private String password;
+
+    @NotBlank(message = "Password strength is required")
+    private String passwordStrength;
+
+    @NotBlank(message = "Category is required")
+    private String category;
+
+    @NotNull(message = "Favourite status is required")
+    private Boolean favourite;
 }

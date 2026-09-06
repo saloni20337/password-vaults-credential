@@ -8,6 +8,8 @@ import com.passwordvault.entity.Credential;
 import com.passwordvault.service.CredentialService;
 import com.passwordvault.service.CredentialShareService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -42,6 +44,7 @@ public class CredentialController {
 
     @PostMapping("/add")
     public Credential addCredential(
+            @Valid 
             @RequestBody CredentialRequest request,
             Authentication authentication
     ) {

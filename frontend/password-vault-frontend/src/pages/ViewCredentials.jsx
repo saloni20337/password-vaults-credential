@@ -25,6 +25,7 @@ function ViewCredentials() {
   const [favouritesOnly, setFavouritesOnly] = useState(false);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [share, setShare] = useState({
     open: false,
@@ -37,16 +38,22 @@ function ViewCredentials() {
   });
 
   const fetchCredentials = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await api.get("/credentials");
-      setCredentials(response.data);
-    } catch (error) {
-      console.error("Failed to fetch credentials:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  try {
+    setLoading(true);
+    setError("");
+
+    const response = await api.get("/credentials");
+    setCredentials(response.data);
+  } catch (error) {
+    console.error("Failed to fetch credentials:", error);
+    setError(
+      error.response?.data?.message ||
+        "Unable to load credentials. Please try again."
+    );
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   useEffect(() => {
     fetchCredentials();
@@ -253,6 +260,14 @@ function ViewCredentials() {
             Password copied successfully.
           </div>
         )}
+        {error && (
+  <div
+    role="alert"
+    className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+  >
+    {error}
+  </div>
+)}
 
         {loading ? (
           <div className="py-16 text-center text-sm text-slate-500">
@@ -492,11 +507,14 @@ function ShareModal({ share, setShare, onClose, onSubmit }) {
             <option value="FULL_MANAGEMENT">🔥 Full Management</option>
           </select>
 
-          {share.error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              {share.error}
-            </div>
-          )}
+        {share.error && (
+  <div
+    role="alert"
+    className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+  >
+    {share.error}
+  </div>
+)}
 
           {share.success && (
             <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">

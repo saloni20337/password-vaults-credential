@@ -65,13 +65,13 @@ function SecurityAnalytics() {
               Back to Dashboard
             </Link>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3">
               <div className="grid size-12 place-items-center bg-violet-300/10 text-violet-300">
                 <BarChart3 className="size-6" />
               </div>
 
               <div>
-                <h1 className="text-3xl font-semibold">
+               <h1 className="text-2xl font-semibold sm:text-3xl">
                   Security Analytics
                 </h1>
 
@@ -84,7 +84,7 @@ function SecurityAnalytics() {
 
           <button
             onClick={fetchAnalytics}
-            className="flex items-center justify-center gap-2 border border-white/[0.08] px-4 py-2 text-sm hover:border-cyan-300/30"
+            className="flex w-full items-center justify-center gap-2 border border-white/[0.08] px-4 py-2 text-sm hover:border-cyan-300/30 sm:w-auto"
           >
             <RefreshCw className={`size-4 ${loading ? "animate-spin" : ""}`} />
             Refresh
@@ -94,7 +94,7 @@ function SecurityAnalytics() {
 
         {/* ERROR */}
         {error && (
-          <div className="mt-6 flex justify-between border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-300">
+          <div className="mt-6 flex flex-col gap-3 border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-300 sm:flex-row sm:items-center sm:justify-between">
             {error}
 
             <button onClick={fetchAnalytics}>
@@ -273,8 +273,7 @@ function ActivitySection({
   return (
     <section className="mt-7 border border-white/[0.08] bg-white/[0.025]">
 
-      <div className="flex items-center justify-between border-b border-white/[0.07] p-5">
-
+     <div className="flex flex-col gap-3 border-b border-white/[0.07] p-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <Icon className="size-5 text-cyan-300" />
 
@@ -317,7 +316,7 @@ function ActivitySection({
           data.map((item) => (
             <div
               key={item.id}
-              className="flex items-center justify-between gap-4 p-5 hover:bg-white/[0.02]"
+           className="flex flex-col gap-2 p-5 hover:bg-white/[0.02] sm:flex-row sm:items-center sm:justify-between"
             >
               {render(item)}
             </div>

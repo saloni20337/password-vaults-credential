@@ -12,8 +12,8 @@ import {
   Activity,
   RefreshCw,
   BarChart3,
-LogIn,
-ShieldAlert,
+  LogIn,
+  ShieldAlert,
 } from "lucide-react";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
@@ -23,6 +23,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [analytics, setAnalytics] = useState(null);
+  const [analyticsError, setAnalyticsError] = useState("");
 const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const navigate = useNavigate();
   const username = "User";
@@ -37,6 +38,7 @@ const [analyticsLoading, setAnalyticsLoading] = useState(true);
     if (!Array.isArray(response.data)) {
       throw new Error("Invalid response");
     }
+
 
     const safeCredentials = response.data.map((credential) => {
       const {
@@ -78,27 +80,28 @@ const [analyticsLoading, setAnalyticsLoading] = useState(true);
     setLoading(false);
   }
 }, [navigate]);
-
-
 const fetchAnalytics = useCallback(async () => {
   try {
     setAnalyticsLoading(true);
+    setAnalyticsError("");
 
-    const response =
-      await api.get("/security/analytics");
-
+    const response = await api.get("/security/analytics");
     setAnalytics(response.data);
+  } catch (requestError) {
+    console.error("Analytics fetch failed:", requestError);
 
-  } catch (error) {
-    console.error(
-      "Failed to fetch security analytics:",
-      error
+    if (requestError.response?.status === 401) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    setAnalyticsError(
+      "Unable to load security analytics. Please try again."
     );
-
   } finally {
     setAnalyticsLoading(false);
   }
-}, []);
+}, [navigate]);
 
 
 useEffect(() => {
@@ -205,7 +208,7 @@ const statItems = [
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
               <div className="hidden items-center gap-2 text-xs text-zinc-500 sm:flex">
                 <span className="size-2 rounded-full bg-emerald-400" />
                 Vault active
@@ -213,7 +216,7 @@ const statItems = [
 
               <Link
                 to="/add-credential"
-                className="inline-flex items-center gap-2 border border-cyan-300/20 bg-cyan-300 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+                className="inline-flex w-full items-center justify-center gap-2 border border-cyan-300/20 bg-cyan-300 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 sm:w-auto"
               >
                 <Plus className="size-4" />
                 Add credential
@@ -223,7 +226,7 @@ const statItems = [
 
           {error && (
             <div className="mt-6 flex flex-col gap-3 border border-red-400/20 bg-red-500/[0.07] p-4 text-sm text-red-200 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-3">
+              <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                 <AlertTriangle className="size-5 shrink-0" />
                 <span>{error}</span>
               </div>
@@ -332,6 +335,7 @@ const statItems = [
 
               <section className="overflow-hidden border border-white/[0.08] bg-white/[0.025]">
                 <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-5 sm:px-6">
+   
                   <div>
                     <h2 className="text-sm font-semibold text-zinc-100">
                       Recently added
@@ -438,6 +442,26 @@ const statItems = [
             </aside>
           </div>
           <section className="mt-7 border border-white/[0.08] bg-white/[0.025]">
+          {analyticsError && (
+  <div
+    role="alert"
+    className="mx-5 mt-5 flex flex-col gap-3 border border-red-400/20 bg-red-500/[0.07] p-4 text-sm text-red-200 sm:mx-6 sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div className="flex items-center gap-2">
+      <AlertTriangle className="size-5 shrink-0" />
+      <span>{analyticsError}</span>
+    </div>
+
+    <button
+      type="button"
+      onClick={fetchAnalytics}
+      className="inline-flex items-center gap-2 self-start font-semibold text-red-100 hover:text-white sm:self-auto"
+    >
+      <RefreshCw className="size-4" />
+      Retry
+    </button>
+  </div>
+)}
 
   <div className="flex flex-col gap-4 border-b border-white/[0.07] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
 
@@ -547,7 +571,7 @@ const statItems = [
       {analytics.recentActivities.map((activity) => (
         <div
           key={activity.id}
-          className="flex items-center justify-between border border-white/[0.07] p-3"
+          className="flex flex-col gap-2 border border-white/[0.07] p-3 sm:flex-row sm:items-center sm:justify-between"
         >
 
           <div>

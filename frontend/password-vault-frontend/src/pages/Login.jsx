@@ -27,6 +27,14 @@ function Login() {
   const handleLogin = async (event) => {
     event.preventDefault();
     setError("");
+    if (!form.email.trim() || !form.password.trim()) {
+  setError("Please enter both email and password.");
+  return;
+}
+if (!/\S+@\S+\.\S+/.test(form.email)) {
+  setError("Please enter a valid email address.");
+  return;
+}
 
     try {
       setLoading(true);
@@ -111,8 +119,12 @@ function Login() {
               </div>
             </div>
 
-            {error && (
-              <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2.5">
+          
+              {error && (
+  <div
+    role="alert"
+    className="rounded-lg border border-red-200 bg-red-50 px-3 py-2.5"
+  >
                 <p className="text-xs font-semibold text-red-800">
                   Login failed
                 </p>

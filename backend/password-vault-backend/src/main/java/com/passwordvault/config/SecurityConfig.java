@@ -17,7 +17,7 @@ import com.passwordvault.security.JwtAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -75,19 +75,15 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // Login and registration APIs
                         .requestMatchers("/api/auth/**")
                         .permitAll()
 
-                        // User APIs
                         .requestMatchers("/api/user/**")
                         .authenticated()
 
-                        // Security Analytics APIs
                         .requestMatchers("/api/security/**")
                         .authenticated()
 
-                        // All other APIs
                         .anyRequest()
                         .authenticated()
                 )

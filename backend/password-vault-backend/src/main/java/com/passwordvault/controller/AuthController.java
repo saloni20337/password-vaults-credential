@@ -6,6 +6,7 @@ import com.passwordvault.dto.RegisterRequest;
 import com.passwordvault.dto.ResetPasswordRequest;
 import com.passwordvault.dto.VerifyOtpRequest;
 import com.passwordvault.entity.Credential;
+import jakarta.validation.Valid;
 import com.passwordvault.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -21,8 +22,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public String register(
-            @RequestBody RegisterRequest request
+    public String register(   
+        @Valid @RequestBody RegisterRequest request
     ) {
         return authService.register(request);
     }
