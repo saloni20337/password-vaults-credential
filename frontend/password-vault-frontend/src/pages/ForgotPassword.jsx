@@ -25,7 +25,7 @@ try{
 
 
 await axios.post(
-"http://localhost:8080/api/auth/forgot-password",
+"https://password-vaults-credential.onrender.com/api/auth/forgot-password",
 {
 email
 }
