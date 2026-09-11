@@ -45,7 +45,7 @@ const handleRegister = async (e) => {
     setLoading(true);
 
     const response = await axios.post(
-      "http://localhost:8080/api/auth/register",
+      "https://password-vaults-credential.onrender.com/api/auth/register",
       {
         name,
         email,
