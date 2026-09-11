@@ -109,7 +109,7 @@ setError("");
 
 await axios.post(
 
-"http://localhost:8080/api/auth/reset-password",
+"https://password-vaults-credential.onrender.com/api/auth/reset-password",
 
 {
 
