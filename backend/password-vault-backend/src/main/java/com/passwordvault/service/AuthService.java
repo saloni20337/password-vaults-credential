@@ -180,32 +180,26 @@ public String forgotPassword(ForgotPasswordRequest request){
     );
 
 
+tokenRepo.save(token);
 
-    tokenRepo.save(token);
+System.out.println("OTP SAVED SUCCESSFULLY");
 
+SimpleMailMessage message = new SimpleMailMessage();
 
+message.setTo(request.getEmail());
+message.setSubject("Password Reset OTP");
+message.setText(
+        "Your OTP for password reset is: " + otp +
+        "\n\nThis OTP is valid for 5 minutes."
+);
 
+System.out.println("ABOUT TO SEND EMAIL");
 
+mailSender.send(message);
 
-    SimpleMailMessage message = new SimpleMailMessage();
+System.out.println("EMAIL SENT SUCCESSFULLY");
 
-
-    message.setTo(request.getEmail());
-
-    message.setSubject("Password Reset OTP");
-
-    message.setText(
-            "Your OTP for password reset is: " + otp +
-            "\n\nThis OTP is valid for 5 minutes."
-    );
-
-
-
-    mailSender.send(message);
-
-
-
-    return "OTP sent successfully";
+return "OTP sent successfully";
 
 }
 
