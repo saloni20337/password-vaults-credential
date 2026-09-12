@@ -85,6 +85,8 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http)
 
         .requestMatchers("/api/user/**")
         .authenticated()
+
+        .requestMatchers("/api/credentials/**").authenticated()
             )
 
             .addFilterBefore(
