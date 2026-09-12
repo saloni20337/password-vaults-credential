@@ -77,17 +77,14 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http)
 
             .authorizeHttpRequests(auth -> auth
 
-                    .requestMatchers("/api/auth/**")
-                    .permitAll()
+        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**")
+        .permitAll()
 
-                    .requestMatchers("/api/user/**")
-                    .authenticated()
+        .requestMatchers("/api/auth/**")
+        .permitAll()
 
-                    .requestMatchers("/api/security/**")
-                    .authenticated()
-
-                    .anyRequest()
-                    .authenticated()
+        .requestMatchers("/api/user/**")
+        .authenticated()
             )
 
             .addFilterBefore(
