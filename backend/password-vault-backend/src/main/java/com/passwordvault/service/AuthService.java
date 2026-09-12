@@ -1,10 +1,9 @@
 package com.passwordvault.service;
 
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.SimpleMailMessage;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
     private final PasswordResetTokenRepo tokenRepo;
-    private final JavaMailSender mailSender;
+    private final GmailService gmailService;
     private final UserRepo userRepo;
     private final BCryptPasswordEncoder encoder;
     private final JwtUtil jwtUtil;
@@ -183,19 +182,12 @@ public String forgotPassword(ForgotPasswordRequest request){
 tokenRepo.save(token);
 
 System.out.println("OTP SAVED SUCCESSFULLY");
-
-SimpleMailMessage message = new SimpleMailMessage();
-
-message.setTo(request.getEmail());
-message.setSubject("Password Reset OTP");
-message.setText(
-        "Your OTP for password reset is: " + otp +
-        "\n\nThis OTP is valid for 5 minutes."
-);
-
 System.out.println("ABOUT TO SEND EMAIL");
 
-mailSender.send(message);
+gmailService.sendOtpEmail(
+        request.getEmail(),
+        otp
+);
 
 System.out.println("EMAIL SENT SUCCESSFULLY");
 
