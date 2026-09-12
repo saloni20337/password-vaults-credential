@@ -83,8 +83,9 @@ public class GmailService {
                     .send("me", message)
                     .execute();
 
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to send OTP email", e);
-        }
+       } catch (Exception e) {
+    e.printStackTrace();
+    throw new RuntimeException("Failed to send OTP email: " + e.getMessage());
+}
     }
 }
