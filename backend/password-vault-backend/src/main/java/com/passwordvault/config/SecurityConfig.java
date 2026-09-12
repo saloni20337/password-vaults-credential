@@ -83,6 +83,9 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http)
         .requestMatchers("/api/auth/**")
         .permitAll()
 
+        .requestMatchers("/api/security/**")
+    .authenticated()
+
         .requestMatchers("/api/user/**")
         .authenticated()
 
