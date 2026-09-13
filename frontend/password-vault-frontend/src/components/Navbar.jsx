@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
+import NotificationBell from "./NotificationBell";
 
 const credentialItems = [
   ["/add-credential", "Add Credential"],
@@ -127,6 +128,7 @@ function Navbar() {
                 </DropdownLink>
               ))}
             </Dropdown>
+             <NotificationBell />
 
             <NavLink to="/profile" onClick={closeAll}>
               Profile
