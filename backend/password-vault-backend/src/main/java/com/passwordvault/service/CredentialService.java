@@ -69,6 +69,9 @@ public class CredentialService {
                         request.getPassword()
                 )
         );
+        credential.setPasswordChangedAt(
+        java.time.LocalDateTime.now()
+);
         credential.setPasswordStrength(
         request.getPasswordStrength()
 );
@@ -359,7 +362,9 @@ return savedCredential;
                 )
         );
 
-
+credential.setPasswordChangedAt(
+        java.time.LocalDateTime.now()
+);
         credential.setCategory(
                 request.getCategory()
         );

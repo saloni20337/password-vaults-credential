@@ -13,5 +13,7 @@ public interface CredentialRepository
                   User user
                 );
                 long countByPasswordStrength(String passwordStrength);
-               
+               List<Credential> findByPasswordChangedAtBefore(
+        java.time.LocalDateTime expiryDate
+);
 }

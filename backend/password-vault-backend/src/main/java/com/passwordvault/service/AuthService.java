@@ -3,7 +3,7 @@ package com.passwordvault.service;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-import org.springframework.mail.SimpleMailMessage;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +14,7 @@ import com.passwordvault.dto.LoginRequest;
 import com.passwordvault.dto.RegisterRequest;
 import com.passwordvault.dto.ResetPasswordRequest;
 import com.passwordvault.dto.VerifyOtpRequest;
-
+import com.passwordvault.service.NotificationService;
 import com.passwordvault.entity.PasswordResetToken;
 import com.passwordvault.entity.User;
 
@@ -36,6 +36,7 @@ public class AuthService {
     private final SuspiciousActivityService suspiciousActivityService;
     private final SecurityAlertService securityAlertService;
     private final AuditLogService auditLogService;
+    private final NotificationService notificationService;
   
 
 
@@ -114,6 +115,12 @@ public class AuthService {
             "SECURITY_ALERT_CREATED",
             "Security alert created for multiple failed login attempts"
     );
+    notificationService.createNotification(
+    user.getId(),
+    "FAILED_LOGIN",
+    "Security Alert",
+    "Multiple failed login attempts were detected on your SecureVault account."
+);
     }
 
         throw new RuntimeException("Invalid Credentials");
@@ -130,7 +137,12 @@ public class AuthService {
         "LOGIN",
         "User logged in successfully"
 );
-
+notificationService.createNotification(
+    user.getId(),
+    "LOGIN",
+    "New Login Detected",
+    "New login detected on your SecureVault account."
+);
     String token = jwtUtil.generateToken(
             user.getEmail()
     );

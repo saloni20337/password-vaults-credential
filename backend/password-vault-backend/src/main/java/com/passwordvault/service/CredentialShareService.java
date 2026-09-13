@@ -3,6 +3,8 @@ package com.passwordvault.service;
 import com.passwordvault.dto.ShareCredentialRequest;
 import com.passwordvault.dto.SharedCredRes;
 import com.passwordvault.entity.Credential;
+import com.passwordvault.service.NotificationService;
+import com.passwordvault.service.GmailService;
 import com.passwordvault.entity.SharedCredential;
 import com.passwordvault.entity.User;
 import com.passwordvault.repository.CredentialRepository;
@@ -22,9 +24,9 @@ public class CredentialShareService {
     private final CredentialRepository credentialRepository;
 
     private final SharedCredentialRepository sharedCredentialRepository;
-
+    private final GmailService gmailService;
     private final UserRepo userRepo;
-
+    private final NotificationService notificationService;
     // GET MY SHARED CREDENTIALS
     public List<SharedCredRes>
     getMySharedCredentials(String email) {
@@ -230,8 +232,19 @@ switch (request.getPermission()) {
 }
 
 sharedCredentialRepository.save(sharedCredential);
-
-
+notificationService.createNotification(
+        receiver.getId(),
+        "CREDENTIAL_SHARED",
+        "Credential Shared",
+        "A credential has been shared with you on SecureVault."
+);
+gmailService.sendNotificationEmail(
+        receiver.getEmail(),
+        "Credential Shared",
+        "A credential has been securely shared with you by "
+                + owner.getName()
+                + ". Please login to SecureVault to view it."
+);
 
         return "Credential shared successfully";
     }

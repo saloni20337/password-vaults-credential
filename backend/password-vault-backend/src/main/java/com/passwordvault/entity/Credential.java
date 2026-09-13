@@ -22,11 +22,15 @@ public class Credential {
     private String username;
 
     private String password;
+
     private String passwordStrength;
+
+    // Stores when this credential password was last changed
+    private java.time.LocalDateTime passwordChangedAt;
 
     private String category;
 
- private boolean favourite=false;
+    private boolean favourite = false;
 
     private boolean deleted;
 
@@ -34,5 +38,4 @@ public class Credential {
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
-
 }

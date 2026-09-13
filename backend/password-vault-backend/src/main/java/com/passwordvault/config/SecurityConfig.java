@@ -87,6 +87,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http)
     .authenticated()
     .requestMatchers("/api/login-activity/**")
     .authenticated()
+    .requestMatchers("/api/notifications/**").authenticated()
 
     .requestMatchers("/api/audit-logs/**").authenticated()
 

@@ -4,7 +4,6 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
-import com.google.auth.oauth2.UserCredentials;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 
 import jakarta.mail.Session;
@@ -88,4 +87,281 @@ public class GmailService {
     throw new RuntimeException("Failed to send OTP email: " + e.getMessage());
 }
     }
+     public void sendSecurityAlertEmail(String toEmail) {
+
+        try {
+
+            GoogleCredential credential = new GoogleCredential.Builder()
+                    .setTransport(
+                            GoogleNetHttpTransport.newTrustedTransport()
+                    )
+                    .setJsonFactory(
+                            GsonFactory.getDefaultInstance()
+                    )
+                    .setClientSecrets(
+                            clientId,
+                            clientSecret
+                    )
+                    .build()
+                    .setRefreshToken(refreshToken);
+
+
+            Gmail gmail = new Gmail.Builder(
+                    GoogleNetHttpTransport.newTrustedTransport(),
+                    GsonFactory.getDefaultInstance(),
+                    credential
+            )
+                    .setApplicationName("Password Vault")
+                    .build();
+
+
+            Properties props = new Properties();
+
+            Session session =
+                    Session.getDefaultInstance(props, null);
+
+
+            MimeMessage email =
+                    new MimeMessage(session);
+
+
+            email.setFrom(
+                    new InternetAddress(senderEmail)
+            );
+
+            email.addRecipient(
+                    jakarta.mail.Message.RecipientType.TO,
+                    new InternetAddress(toEmail)
+            );
+
+
+            email.setSubject(
+                    "Password Vault - Security Alert"
+            );
+
+
+            email.setText(
+                    "Security Alert\n\n" +
+
+                    "Multiple failed login attempts were detected " +
+                    "on your SecureVault account.\n\n" +
+
+                    "If this was not you, please secure your account immediately."
+            );
+
+
+            ByteArrayOutputStream buffer =
+                    new ByteArrayOutputStream();
+
+            email.writeTo(buffer);
+
+
+            String encodedEmail =
+                    Base64.getUrlEncoder()
+                            .withoutPadding()
+                            .encodeToString(
+                                    buffer.toByteArray()
+                            );
+
+
+            Message message =
+                    new Message();
+
+            message.setRaw(encodedEmail);
+
+
+            gmail.users()
+                    .messages()
+                    .send("me", message)
+                    .execute();
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            throw new RuntimeException(
+                    "Failed to send security alert email: "
+                            + e.getMessage()
+            );
+        }
+    }
+    public void sendCredentialSharedEmail(String toEmail) {
+
+    try {
+
+        GoogleCredential credential = new GoogleCredential.Builder()
+                .setTransport(
+                        GoogleNetHttpTransport.newTrustedTransport()
+                )
+                .setJsonFactory(
+                        GsonFactory.getDefaultInstance()
+                )
+                .setClientSecrets(
+                        clientId,
+                        clientSecret
+                )
+                .build()
+                .setRefreshToken(refreshToken);
+
+        Gmail gmail = new Gmail.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                GsonFactory.getDefaultInstance(),
+                credential
+        )
+                .setApplicationName("Password Vault")
+                .build();
+
+        Properties props = new Properties();
+
+        Session session =
+                Session.getDefaultInstance(props, null);
+
+        MimeMessage email =
+                new MimeMessage(session);
+
+        email.setFrom(
+                new InternetAddress(senderEmail)
+        );
+
+        email.addRecipient(
+                jakarta.mail.Message.RecipientType.TO,
+                new InternetAddress(toEmail)
+        );
+
+        email.setSubject(
+                "Password Vault - Credential Shared"
+        );
+
+        email.setText(
+                "Credential Shared\n\n" +
+                "A credential has been shared with you " +
+                "on your SecureVault account.\n\n" +
+                "Please log in to your account to view the shared credential.\n\n" +
+                "For security reasons, the actual credential details " +
+                "are not included in this email."
+        );
+
+        ByteArrayOutputStream buffer =
+                new ByteArrayOutputStream();
+
+        email.writeTo(buffer);
+
+        String encodedEmail =
+                Base64.getUrlEncoder()
+                        .withoutPadding()
+                        .encodeToString(
+                                buffer.toByteArray()
+                        );
+
+        Message message =
+                new Message();
+
+        message.setRaw(encodedEmail);
+
+        gmail.users()
+                .messages()
+                .send("me", message)
+                .execute();
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        throw new RuntimeException(
+                "Failed to send credential sharing email: "
+                        + e.getMessage()
+        );
+    }
+}
+public void sendNotificationEmail(
+        String toEmail,
+        String subject,
+        String messageText
+) {
+
+    try {
+
+        GoogleCredential credential =
+                new GoogleCredential.Builder()
+                        .setTransport(
+                                GoogleNetHttpTransport
+                                        .newTrustedTransport()
+                        )
+                        .setJsonFactory(
+                                GsonFactory.getDefaultInstance()
+                        )
+                        .setClientSecrets(
+                                clientId,
+                                clientSecret
+                        )
+                        .build()
+                        .setRefreshToken(refreshToken);
+
+        Gmail gmail =
+                new Gmail.Builder(
+                        GoogleNetHttpTransport
+                                .newTrustedTransport(),
+                        GsonFactory.getDefaultInstance(),
+                        credential
+                )
+                        .setApplicationName("Password Vault")
+                        .build();
+
+        Properties props = new Properties();
+
+        Session session =
+                Session.getDefaultInstance(
+                        props,
+                        null
+                );
+
+        MimeMessage email =
+                new MimeMessage(session);
+
+        email.setFrom(
+                new InternetAddress(senderEmail)
+        );
+
+        email.addRecipient(
+                jakarta.mail.Message.RecipientType.TO,
+                new InternetAddress(toEmail)
+        );
+
+        email.setSubject(subject);
+
+        email.setText(messageText);
+
+        ByteArrayOutputStream buffer =
+                new ByteArrayOutputStream();
+
+        email.writeTo(buffer);
+
+        String encodedEmail =
+                Base64.getUrlEncoder()
+                        .withoutPadding()
+                        .encodeToString(
+                                buffer.toByteArray()
+                        );
+
+        Message message =
+                new Message();
+
+        message.setRaw(encodedEmail);
+
+        gmail.users()
+                .messages()
+                .send("me", message)
+                .execute();
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+        throw new RuntimeException(
+                "Failed to send notification email: "
+                        + e.getMessage()
+        );
+    }
+}
 }
