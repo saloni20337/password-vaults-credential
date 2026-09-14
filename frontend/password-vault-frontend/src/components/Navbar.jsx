@@ -12,7 +12,7 @@ const credentialItems = [
 const securityItems = [
   ["/login-activity", "Login Activity"],
   ["/suspicious-activity", "Suspicious Activity"],
-    ["/security-alerts", "Security Alerts"],
+  ["/security-alerts", "Security Alerts"],
   ["/audit-logs", "Audit Logs"],
 ];
 
@@ -42,6 +42,7 @@ function Navbar() {
     };
 
     document.addEventListener("mousedown", closeMenus);
+
     return () => document.removeEventListener("mousedown", closeMenus);
   }, [fetchProfile]);
 
@@ -53,12 +54,6 @@ function Navbar() {
   const toggleMenu = (menu) => {
     setOpenMenu((current) => (current === menu ? null : menu));
   };
-  const securityItems = [
-  ["/login-activity", "Login Activity"],
-  ["/suspicious-activity", "Suspicious Activity"],
-  ["/security-alerts", "Security Alerts"],
-  ["/audit-logs", "Audit Logs"],
-];
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -91,20 +86,23 @@ function Navbar() {
               <h1 className="text-sm font-bold tracking-wide">
                 Password Vault
               </h1>
+
               <p className="text-[10px] text-slate-400">
                 Secure your digital life
               </p>
             </div>
           </Link>
 
-
+          {/* DESKTOP NAVBAR */}
           <div className="hidden items-center gap-1 md:flex">
             <NavLink to="/dashboard" onClick={closeAll}>
               Dashboard
             </NavLink>
-<NavLink to="/reports" onClick={closeAll}>
-  Reports
-</NavLink>
+
+            <NavLink to="/reports" onClick={closeAll}>
+              Reports
+            </NavLink>
+
             <Dropdown
               label="Credentials"
               open={openMenu === "credentials"}
@@ -128,7 +126,9 @@ function Navbar() {
                 </DropdownLink>
               ))}
             </Dropdown>
-             <NotificationBell />
+
+            {/* DESKTOP NOTIFICATION BELL */}
+            <NotificationBell />
 
             <NavLink to="/profile" onClick={closeAll}>
               Profile
@@ -143,6 +143,7 @@ function Navbar() {
             </button>
           </div>
 
+          {/* MOBILE MENU BUTTON */}
           <button
             type="button"
             aria-label="Toggle navigation menu"
@@ -157,9 +158,16 @@ function Navbar() {
           </button>
         </div>
 
+        {/* MOBILE NAVBAR */}
         {mobileOpen && (
           <div className="border-t border-slate-800 bg-slate-950 px-4 py-4 md:hidden">
             <div className="space-y-1">
+
+              {/* MOBILE NOTIFICATION BELL */}
+              <div className="mb-3 flex items-center border-b border-white/10 pb-3">
+                <NotificationBell />
+              </div>
+
               <MobileLink to="/dashboard" onClick={closeAll}>
                 Dashboard
               </MobileLink>
@@ -170,7 +178,11 @@ function Navbar() {
                 onClick={() => toggleMenu("credentials")}
               >
                 {credentialItems.map(([to, label]) => (
-                  <MobileDropdownLink key={to} to={to} onClick={closeAll}>
+                  <MobileDropdownLink
+                    key={to}
+                    to={to}
+                    onClick={closeAll}
+                  >
                     {label}
                   </MobileDropdownLink>
                 ))}
@@ -182,7 +194,11 @@ function Navbar() {
                 onClick={() => toggleMenu("security")}
               >
                 {securityItems.map(([to, label]) => (
-                  <MobileDropdownLink key={to} to={to} onClick={closeAll}>
+                  <MobileDropdownLink
+                    key={to}
+                    to={to}
+                    onClick={closeAll}
+                  >
                     {label}
                   </MobileDropdownLink>
                 ))}
@@ -204,20 +220,24 @@ function Navbar() {
         )}
       </nav>
 
+      {/* LOGOUT POPUP */}
       {showLogoutPopup && (
-       <div
-  className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 backdrop-blur-[2px]"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="logout-title"
->
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 backdrop-blur-[2px]"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="logout-title"
+        >
           <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
             <div className="p-6">
               <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-lg text-red-600">
                 !
               </div>
 
-              <h2 id="logout-title" className="text-lg font-bold text-slate-950">
+              <h2
+                id="logout-title"
+                className="text-lg font-bold text-slate-950"
+              >
                 Log out?
               </h2>
 
@@ -276,7 +296,12 @@ function Dropdown({ label, open, onClick, children }) {
         }`}
       >
         {label}
-        <span className={`text-xs transition-transform ${open ? "rotate-180" : ""}`}>
+
+        <span
+          className={`text-xs transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
+        >
           ▾
         </span>
       </button>
@@ -323,7 +348,12 @@ function MobileDropdown({ label, open, onClick, children }) {
         className="flex w-full items-center justify-between rounded-lg px-3 py-3 text-left text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
       >
         {label}
-        <span className={`text-xs transition-transform ${open ? "rotate-180" : ""}`}>
+
+        <span
+          className={`text-xs transition-transform ${
+            open ? "rotate-180" : ""
+          }`}
+        >
           ▾
         </span>
       </button>
@@ -350,4 +380,3 @@ function MobileDropdownLink({ to, onClick, children }) {
 }
 
 export default Navbar;
-
