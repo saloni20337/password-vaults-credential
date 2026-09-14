@@ -1,4 +1,3 @@
-
 package com.passwordvault.service;
 
 import com.passwordvault.entity.LoginActivity;
