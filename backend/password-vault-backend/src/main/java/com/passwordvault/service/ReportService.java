@@ -1,3 +1,4 @@
+
 package com.passwordvault.service;
 
 import com.passwordvault.dto.LoginActivityReport;
@@ -5,8 +6,8 @@ import com.passwordvault.dto.PasswordHealthReport;
 import com.passwordvault.entity.LoginActivity;
 import com.passwordvault.repository.CredentialRepository;
 import com.passwordvault.repository.LoginActivityRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,80 +17,39 @@ import java.util.List;
 public class ReportService {
 
     private final CredentialRepository credentialRepository;
-
     private final LoginActivityRepository loginActivityRepository;
-
 
     public PasswordHealthReport getPasswordHealthReport() {
 
-        long total =
-                credentialRepository.count();
+        long total = credentialRepository.count();
+        long strong = credentialRepository.countByPasswordStrength("strong");
+        long medium = credentialRepository.countByPasswordStrength("medium");
+        long weak = credentialRepository.countByPasswordStrength("weak");
 
-        long strong =
-                credentialRepository
-                        .countByPasswordStrength("strong");
-
-        long medium =
-                credentialRepository
-                        .countByPasswordStrength("medium");
-
-        long weak =
-                credentialRepository
-                        .countByPasswordStrength("weak");
-
-
-        int healthScore;
-
-        if (total == 0) {
-
-            healthScore = 100;
-
-        } else {
-
-            healthScore =
-                    (int) (
-                            ((strong * 100)
-                            + (medium * 60)
-                            + (weak * 20))
-                            / total
-                    );
-        }
-
+        int healthScore = total == 0 ? 100 :
+                (int) (((strong * 100) + (medium * 60) + (weak * 20)) / total);
 
         return new PasswordHealthReport(
-                total,
-                strong,
-                medium,
-                weak,
-                healthScore
+                total, strong, medium, weak, healthScore
         );
     }
 
-
-    public LoginActivityReport getLoginActivityReport() {
-
-        long total =
-                loginActivityRepository.count();
+    public LoginActivityReport getLoginActivityReport(String username) {
 
         long successful =
-                loginActivityRepository
-                        .countByStatus("SUCCESS");
+                loginActivityRepository.countByUsernameAndStatus(username, "SUCCESS");
 
         long failed =
-                loginActivityRepository
-                        .countByStatus("FAILED");
+                loginActivityRepository.countByUsernameAndStatus(username, "FAILED");
 
+        long total = successful + failed;
 
         List<LoginActivity> recentActivities =
                 loginActivityRepository
-                        .findTop5ByOrderByLoginTimeDesc();
-
+                        .findTop20ByUsernameOrderByLoginTimeDesc(username);
 
         return new LoginActivityReport(
-                total,
-                successful,
-                failed,
-                recentActivities
+                total, successful, failed, recentActivities
         );
     }
 }

@@ -3,7 +3,7 @@ package com.passwordvault.controller;
 import com.passwordvault.dto.LoginActivityReport;
 import com.passwordvault.dto.PasswordHealthReport;
 import com.passwordvault.service.ReportService;
-
+import org.springframework.security.core.Authentication;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +25,11 @@ public class ReportController {
                 .getPasswordHealthReport();
     }
 
+@GetMapping("/login-activity")
+public LoginActivityReport getLoginActivityReport(
+        Authentication authentication) {
 
-    @GetMapping("/login-activity")
-    public LoginActivityReport getLoginActivityReport() {
-
-        return reportService
-                .getLoginActivityReport();
-    }
+    return reportService
+            .getLoginActivityReport(authentication.getName());
+}
 }
