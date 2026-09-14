@@ -82,7 +82,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http)
 
         .requestMatchers("/api/auth/**")
         .permitAll()
-
+.requestMatchers("/api/reports/**").authenticated()
         .requestMatchers("/api/security/**")
     .authenticated()
     .requestMatchers("/api/login-activity/**")
