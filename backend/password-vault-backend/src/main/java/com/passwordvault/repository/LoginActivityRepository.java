@@ -9,8 +9,7 @@ import java.util.List;
 public interface LoginActivityRepository
         extends JpaRepository<LoginActivity, Long> {
 
-    List<LoginActivity> findByUsernameOrderByLoginTimeDesc(String username);
-
+  List<LoginActivity> findTop20ByUsernameOrderByLoginTimeDesc(String username);
     long countByUsernameAndStatus(String username, String status);
 
     long countByUsernameAndStatusAndLoginTimeAfter(

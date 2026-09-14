@@ -28,7 +28,7 @@ public class LoginActivityService {
     public List<LoginActivity> getUserActivities(String username) {
 
         return loginActivityRepository
-                .findByUsernameOrderByLoginTimeDesc(username);
+        .findTop20ByUsernameOrderByLoginTimeDesc(username);
     }
     public long getFailedAttempts(String username) {
 
