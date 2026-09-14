@@ -1,3 +1,4 @@
+
 package com.passwordvault.service;
 
 import com.passwordvault.entity.LoginActivity;
@@ -14,10 +15,11 @@ public class LoginActivityService {
 
     private final LoginActivityRepository loginActivityRepository;
 
-    public void recordActivity(String username, String status) {
+    public void recordActivity(Long userId, String username, String status) {
 
         LoginActivity activity = new LoginActivity();
 
+        activity.setUserId(userId);
         activity.setUsername(username);
         activity.setLoginTime(LocalDateTime.now());
         activity.setStatus(status);
@@ -26,26 +28,26 @@ public class LoginActivityService {
     }
 
     public List<LoginActivity> getUserActivities(String username) {
+        return loginActivityRepository
+                .findTop20ByUsernameOrderByLoginTimeDesc(username);
+    }
+
+    public long getFailedAttempts(String username) {
+        return loginActivityRepository
+                .countByUsernameAndStatus(username, "FAILED");
+    }
+
+    public long getRecentFailedAttempts(String username) {
+
+        LocalDateTime tenMinutesAgo =
+                LocalDateTime.now().minusMinutes(10);
 
         return loginActivityRepository
-        .findTop20ByUsernameOrderByLoginTimeDesc(username);
+                .countByUsernameAndStatusAndLoginTimeAfter(
+                        username,
+                        "FAILED",
+                        tenMinutesAgo
+                );
     }
-    public long getFailedAttempts(String username) {
-
-    return loginActivityRepository
-            .countByUsernameAndStatus(username, "FAILED");
-}
-public long getRecentFailedAttempts(String username) {
-
-    LocalDateTime tenMinutesAgo =
-            LocalDateTime.now().minusMinutes(10);
-
-    return loginActivityRepository
-            .countByUsernameAndStatusAndLoginTimeAfter(
-                    username,
-                    "FAILED",
-                    tenMinutesAgo
-            );
 }
 
-}

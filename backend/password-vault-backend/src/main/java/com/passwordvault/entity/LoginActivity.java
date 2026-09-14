@@ -25,4 +25,5 @@ public class LoginActivity {
     private LocalDateTime loginTime;
 
     private String status;
+    private Long userId;
 }

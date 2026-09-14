@@ -91,10 +91,11 @@ public class AuthService {
             user.getPassword()
     )) {
 
-        loginActivityService.recordActivity(
-                user.getEmail(),
-                "FAILED"
-        );
+       loginActivityService.recordActivity(
+        user.getId(),
+        user.getEmail(),
+        "FAILED"
+);
          long failedAttempts =
             loginActivityService.getRecentFailedAttempts(
                     user.getEmail()
@@ -128,10 +129,11 @@ public class AuthService {
 
 
     // SUCCESSFUL LOGIN
-    loginActivityService.recordActivity(
-            user.getEmail(),
-            "SUCCESS"
-    );
+   loginActivityService.recordActivity(
+        user.getId(),
+        user.getEmail(),
+        "SUCCESS"
+);
    auditLogService.createLog(
         user.getId(),
         "LOGIN",

@@ -7,7 +7,6 @@ import com.passwordvault.entity.LoginActivity;
 import com.passwordvault.repository.CredentialRepository;
 import com.passwordvault.repository.LoginActivityRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,22 +33,28 @@ public class ReportService {
         );
     }
 
-    public LoginActivityReport getLoginActivityReport(String username) {
+    public LoginActivityReport getLoginActivityReport(Long userId) {
 
         long successful =
-                loginActivityRepository.countByUsernameAndStatus(username, "SUCCESS");
+                loginActivityRepository.countByUserIdAndStatus(
+                        userId, "SUCCESS");
 
         long failed =
-                loginActivityRepository.countByUsernameAndStatus(username, "FAILED");
+                loginActivityRepository.countByUserIdAndStatus(
+                        userId, "FAILED");
 
         long total = successful + failed;
 
         List<LoginActivity> recentActivities =
                 loginActivityRepository
-                        .findTop20ByUsernameOrderByLoginTimeDesc(username);
+                        .findTop20ByUserIdOrderByLoginTimeDesc(userId);
 
         return new LoginActivityReport(
-                total, successful, failed, recentActivities
+                total,
+                successful,
+                failed,
+                recentActivities
         );
     }
 }
+

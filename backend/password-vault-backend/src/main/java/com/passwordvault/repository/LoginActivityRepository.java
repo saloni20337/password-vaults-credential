@@ -17,7 +17,11 @@ public interface LoginActivityRepository
             String status,
             LocalDateTime after
     );
+   long countByUserIdAndStatus(Long userId, String status);
 
+List<LoginActivity> findTop20ByUserIdOrderByLoginTimeDesc(Long userId);
+
+long countByUserId(Long userId);
     long countByStatus(String status);
 
     List<LoginActivity> findTop5ByOrderByLoginTimeDesc();
