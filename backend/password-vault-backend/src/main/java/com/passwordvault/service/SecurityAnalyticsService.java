@@ -1,3 +1,4 @@
+
 package com.passwordvault.service;
 
 import com.passwordvault.dto.SecurityAnalyticsResponse;
@@ -18,14 +19,16 @@ public class SecurityAnalyticsService {
     private final SecurityAlertRepository securityAlertRepository;
     private final AuditLogRepository auditLogRepository;
 
-    public SecurityAnalyticsResponse getAnalytics() {
+    public SecurityAnalyticsResponse getAnalytics(String username) {
 
-        // Login Statistics
+        // Login Statistics - only for current user
         long successfulLogins =
-                loginActivityRepository.countByStatus("SUCCESS");
+                loginActivityRepository
+                        .countByUsernameAndStatus(username, "SUCCESS");
 
         long failedLogins =
-                loginActivityRepository.countByStatus("FAILED");
+                loginActivityRepository
+                        .countByUsernameAndStatus(username, "FAILED");
 
         long totalLogins =
                 successfulLogins + failedLogins;

@@ -3,9 +3,8 @@ package com.passwordvault.controller;
 import com.passwordvault.dto.SecurityAnalyticsResponse;
 import com.passwordvault.service.SecurityAnalyticsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/security")
@@ -15,8 +14,9 @@ public class SecurityAnalyticsController {
     private final SecurityAnalyticsService securityAnalyticsService;
 
     @GetMapping("/analytics")
-    public SecurityAnalyticsResponse getAnalytics() {
-
-        return securityAnalyticsService.getAnalytics();
+    public SecurityAnalyticsResponse getAnalytics(
+            Authentication authentication
+    ) {
+        return securityAnalyticsService.getAnalytics(authentication.getName());
     }
 }
